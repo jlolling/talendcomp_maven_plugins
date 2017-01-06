@@ -3,7 +3,47 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>de.cimt.talendcomp</groupId>
 	<artifactId>cimt-talendcomp-maven-plugin</artifactId>
+	<version>1.0</version>
 	<packaging>maven-plugin</packaging>
+
+	<description>A Mock for a Talend DataIntegration job</description>
+	<url>https://github.com/jlolling/talendcomp_maven_plugins</url>
+
+	<licenses>
+		<license>
+			<name>The Apache Software License, Version 2.0</name>
+			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+		</license>
+	</licenses>
+
+	<developers>
+		<developer>
+			<name>Jan Lolling</name>
+			<email>jan.lolling@gmail.com</email>
+			<organization>cimt AG</organization>
+			<organizationUrl>http://www.cimt-ag.de</organizationUrl>
+		</developer>
+	</developers>
+	
+	<scm>
+		<connection>scm:git:git://github.com/jlolling/talendcomp_maven_plugins.git</connection>
+		<developerConnection>scm:git:ssh://github.com/jlolling/talendcomp_maven_plugins.git</developerConnection>
+		<url>http://github.com/jlolling/talendcomp_maven_plugins/tree/master</url>
+	</scm>
+
+	<repositories>
+		<repository>
+			<id>ossrh</id>
+			<url>https://oss.sonatype.org/service/local/staging/deploy/maven2</url>
+		      <releases>
+		        <enabled>false</enabled>
+		        <updatePolicy>always</updatePolicy>
+		        <checksumPolicy>warn</checksumPolicy>
+		      </releases>
+			<name>Sonatype Release</name>
+			<layout>default</layout>
+		</repository>
+	</repositories>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -33,6 +73,7 @@
 			</plugin>
 		</plugins>
 	</build>
+	
 	<dependencies>
 		<dependency>
 			<groupId>org.apache.maven</groupId>
@@ -72,5 +113,5 @@
 			<version>1.6.1</version>
 		</dependency>
 	</dependencies>
-	<version>1.0</version>
+	
 </project>
