@@ -32,4 +32,13 @@ To use it in your own Talend component project use this plugin configuration:
 Only the configuration parameter `componentName` is mandatory.
 The other parameters will be filled with default values (the current values here).
 The parameter `componentReleaseDate` will be filled with the current date.
-
+The result e.g. a list of the necessary modules within a Talend component XML configuration.
+Example:
+```
+  <CODEGENERATION> 
+    <IMPORTS> 
+      <IMPORT NAME="poi-ooxml" MODULE="poi-ooxml-3.15.jar" REQUIRED="true"/>
+      <IMPORT NAME="xalan" MODULE="xalan-2.7.2.jar" REQUIRED="true"/>
+    </IMPORTS> 
+  </CODEGENERATION>  
+```
