@@ -42,3 +42,13 @@ Example:
     </IMPORTS> 
   </CODEGENERATION>  
 ```
+
+This plugin is not yet available via Maven Central. I am going to publish it there.
+For the moment you can download it here:
+http://jan-lolling.de/talend/cimt-talendcomp-maven-plugin-1.0.jar
+
+and install it with this command (please setup your file path here acording to your down load location)
+```
+mvn install:install-file -Dfile=Downloads/cimt-talendcomp-maven-plugin-1.0.jar -DgroupId=de.cimt.talendcomp \
+    -DartifactId=cimt-talendcomp-maven-plugin -Dversion=1.0 -Dpackaging=jar
+```
