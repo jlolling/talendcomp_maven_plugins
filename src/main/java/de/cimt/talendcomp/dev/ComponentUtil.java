@@ -304,6 +304,28 @@ public class ComponentUtil {
 				}
 			}
 		}
+		// read return value names
+		paramNameNodes = xmlDoc.selectNodes("/COMPONENT/RETURNS/RETURN/@NAME");
+		for (Node node : paramNameNodes) {
+			String name = node.getStringValue().trim();
+			String key = name + ".NAME";
+			if (messages.containsKey(key) == false) {
+				listMissingMessageProperties.add(key);
+			}
+		}
+		// read connector names
+		paramNameNodes = xmlDoc.selectNodes("/COMPONENT/CONNECTORS/CONNECTOR/@NAME");
+		for (Node node : paramNameNodes) {
+			String name = node.getStringValue().trim();
+			String keyMenu = name + ".MENU";
+			if (messages.containsKey(keyMenu) == false) {
+				listMissingMessageProperties.add(keyMenu);
+			}
+			String keyLink = name + ".LINK";
+			if (messages.containsKey(keyLink) == false) {
+				listMissingMessageProperties.add(keyLink);
+			}
+		}
 		return fileName;
 	}
 
