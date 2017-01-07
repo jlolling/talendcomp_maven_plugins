@@ -224,14 +224,14 @@ public class ComponentUtil {
 				.addAttribute("MODULE", jar.getName())
 				.addAttribute("REQUIRED", "true");
 		}
+	}
+	
+	public void setupXMLReleaseLabel() {
 		Element headerNode = (Element) xmlDoc.selectSingleNode( "/COMPONENT/HEADER" );
 		headerNode.addAttribute("RELEASE_DATE", getReleaseDate());
 		if (componentVersion != null && componentVersion.trim().isEmpty() == false) {
 			headerNode.addAttribute("VERSION", componentVersion);
 		}
-	}
-	
-	public void setupXMLReleaseLabel() {
 		Element releaseElement = (Element) xmlDoc.selectSingleNode( "/COMPONENT/ADVANCED_PARAMETERS/PARAMETER[@NAME='RELEASE_LABEL']");
 		if (releaseElement != null) {
 			releaseElement.detach();
