@@ -1,6 +1,6 @@
 #Maven plugin to setup a Talend component
 
-This plugin is bound to the phase `install` performes for a talend component:
+This plugin is bound to the phase `install` and performes for a talend component following tasks:
 * adds the necessary libraries according to the project dependencies to the component and deletes obsolete libs
 * Setup the IMPORT tags in the component XML configuration file
 * Setup the release date tag of the component
