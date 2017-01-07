@@ -45,8 +45,16 @@ public class ComponentDeploymentMojo extends AbstractMojo {
 		util.setComponentVersion(componentVersion);
 		util.setComponentReleaseDate(componentReleaseDate);
 		getLog().info("Check dependencies and collect artifact jar files...");
+		Artifact mainArtifact = project.getArtifact();
+		if (mainArtifact != null) {
+			try {
+				util.addJarFile(mainArtifact.getFile().getAbsolutePath());
+			} catch (Exception e) {
+				throw new MojoExecutionException("Main artifact: " + mainArtifact + ": failed get jar file: " + mainArtifact.getFile().getAbsolutePath());
+			}
+		}
 		@SuppressWarnings("unchecked")
-		Set<Artifact> artifacts = project.getArtifacts();	
+		Set<Artifact> artifacts = project.getArtifacts();
 		for (Artifact a : artifacts) {
 			if ("provided".equals(a.getScope()) == false) {
 				String path = a.getFile().getAbsolutePath();

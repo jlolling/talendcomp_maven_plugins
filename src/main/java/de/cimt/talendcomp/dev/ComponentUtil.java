@@ -28,6 +28,7 @@ public class ComponentUtil {
 	private String componentBaseDir = null;
 	private String componentVersion = null;
 	private String componentReleaseDate = null;
+	private boolean addReleaseInfoAsLabel = true;
 	private Document xmlDoc = null;
 	private List<File> listJars = new ArrayList<File>();
 	private SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
@@ -176,7 +177,7 @@ public class ComponentUtil {
 			if (codeGenNode == null) {
 				Element compNode = (Element) xmlDoc.selectSingleNode( "//COMPONENT" );
 				if (compNode == null) {
-					throw new IllegalStateException("There is no COMPONENT tag. This is not a Talend component descriptor document!");
+					throw new IllegalStateException("There is no COMPONENT tag. This is not a valid Talend component descriptor document!");
 				} else {
 					codeGenNode = compNode.addElement("CODEGENERATION");
 					importsNode = codeGenNode.addElement("IMPORTS");
@@ -204,6 +205,17 @@ public class ComponentUtil {
 			headerNode.addAttribute("VERSION", componentVersion);
 		}
 	}
+	
+	private void setupReleaseLabel() {
+		Element releaseElement = (Element) xmlDoc.selectSingleNode( "//COMPONENT/ADVANCED_PARAMETERS/RELEASE_LABEL");
+		if (releaseElement == null) {
+			Element advancedParams = (Element) xmlDoc.selectSingleNode( "//COMPONENT/ADVANCED_PARAMETERS" );
+			if (advancedParams == null) {
+				throw new IllegalStateException("There is no ADVANCED_PARAMETERS tag. This is not a valid Talend component descriptor document!");
+			} else {
+			}
+		}
+	}
 
 	public String getComponentReleaseDate() {
 		return componentReleaseDate;
@@ -211,6 +223,14 @@ public class ComponentUtil {
 
 	public void setComponentReleaseDate(String componentReleaseDate) {
 		this.componentReleaseDate = componentReleaseDate;
+	}
+
+	public boolean isAddReleaseInfoAsLabel() {
+		return addReleaseInfoAsLabel;
+	}
+
+	public void setAddReleaseInfoAsLabel(boolean addReleaseInfoAsLabel) {
+		this.addReleaseInfoAsLabel = addReleaseInfoAsLabel;
 	}
 	
 }
