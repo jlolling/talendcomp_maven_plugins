@@ -29,6 +29,8 @@ public class ComponentDeploymentMojo extends AbstractMojo {
 	private String componentReleaseDate;
 	@Parameter(defaultValue = "${project}", readonly = true)
     private MavenProject project;
+	@Parameter(defaultValue = "true")
+    private boolean addReleaseLabel;
 	
 	@Override
 	public void execute() throws MojoExecutionException, MojoFailureException {
@@ -90,9 +92,14 @@ public class ComponentDeploymentMojo extends AbstractMojo {
 			MojoFailureException me = new MojoFailureException("Copy jars into component failed: " + e.getMessage(), e);
 			throw me;
 		}
-		getLog().info("Setup component XML coniguration...");
+		getLog().info("Setup component XML configuration...");
 		try {
-			util.setupXML();
+			getLog().info("    setup IMPORTs");
+			util.setupXMLImports();
+			if (addReleaseLabel) {
+				getLog().info("    add RELEASE_LABEL");
+				util.setupXMLReleaseLabel();
+			}
 			getLog().info("Done.");
 		} catch (Exception e) {
 			MojoFailureException me = new MojoFailureException("Setup component XML coniguration failed: " + e.getMessage(), e);

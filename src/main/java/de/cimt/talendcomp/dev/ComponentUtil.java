@@ -64,7 +64,7 @@ public class ComponentUtil {
 		readXmlConfiguration();
 		clearComponentJars();
 		copyJars();
-		setupXML();
+		setupXMLImports();
 		writeXmlConfiguration();
 	}
 	
@@ -169,13 +169,13 @@ public class ComponentUtil {
 		return componentReleaseDate;
 	}
 	
-	public void setupXML() throws Exception {
-		Element importsNode = (Element) xmlDoc.selectSingleNode( "//COMPONENT/CODEGENERATION/IMPORTS" );
+	public void setupXMLImports() throws Exception {
+		Element importsNode = (Element) xmlDoc.selectSingleNode( "/COMPONENT/CODEGENERATION/IMPORTS" );
 		if (importsNode == null) {
 			// we must create an IMPORTS node
-			Element codeGenNode = (Element) xmlDoc.selectSingleNode( "//COMPONENT/CODEGENERATION" );
+			Element codeGenNode = (Element) xmlDoc.selectSingleNode( "/COMPONENT/CODEGENERATION" );
 			if (codeGenNode == null) {
-				Element compNode = (Element) xmlDoc.selectSingleNode( "//COMPONENT" );
+				Element compNode = (Element) xmlDoc.selectSingleNode( "/COMPONENT" );
 				if (compNode == null) {
 					throw new IllegalStateException("There is no COMPONENT tag. This is not a valid Talend component descriptor document!");
 				} else {
@@ -188,7 +188,7 @@ public class ComponentUtil {
 		}
 		// remove existing IMPORT tags
 		@SuppressWarnings("unchecked")
-		List<Node> importNodes = importsNode.selectNodes("//COMPONENT/CODEGENERATION/IMPORTS/IMPORT");
+		List<Node> importNodes = importsNode.selectNodes("/COMPONENT/CODEGENERATION/IMPORTS/IMPORT");
 		for (Node n : importNodes) {
 			n.detach();
 		}
@@ -199,21 +199,28 @@ public class ComponentUtil {
 				.addAttribute("MODULE", jar.getName())
 				.addAttribute("REQUIRED", "true");
 		}
-		Element headerNode = (Element) xmlDoc.selectSingleNode( "//COMPONENT/HEADER" );
+		Element headerNode = (Element) xmlDoc.selectSingleNode( "/COMPONENT/HEADER" );
 		headerNode.addAttribute("RELEASE_DATE", getReleaseDate());
 		if (componentVersion != null && componentVersion.trim().isEmpty() == false) {
 			headerNode.addAttribute("VERSION", componentVersion);
 		}
 	}
 	
-	private void setupReleaseLabel() {
-		Element releaseElement = (Element) xmlDoc.selectSingleNode( "//COMPONENT/ADVANCED_PARAMETERS/RELEASE_LABEL");
-		if (releaseElement == null) {
-			Element advancedParams = (Element) xmlDoc.selectSingleNode( "//COMPONENT/ADVANCED_PARAMETERS" );
-			if (advancedParams == null) {
-				throw new IllegalStateException("There is no ADVANCED_PARAMETERS tag. This is not a valid Talend component descriptor document!");
-			} else {
-			}
+	public void setupXMLReleaseLabel() {
+		Element releaseElement = (Element) xmlDoc.selectSingleNode( "/COMPONENT/ADVANCED_PARAMETERS/PARAMETER[@NAME='RELEASE_LABEL']");
+		if (releaseElement != null) {
+			releaseElement.detach();
+		}
+		Element advancedParams = (Element) xmlDoc.selectSingleNode( "/COMPONENT/ADVANCED_PARAMETERS" );
+		if (advancedParams == null) {
+			throw new IllegalStateException("There is no ADVANCED_PARAMETERS tag. This is not a valid Talend component descriptor document!");
+		} else {
+			releaseElement = advancedParams.addElement("PARAMETER")
+				.addAttribute("NAME", "RELEASE_LABEL")
+				.addAttribute("FIELD", "LABEL")
+				.addAttribute("COLOR", "0;0;0")
+				.addAttribute("NUM_ROW", "900");
+			releaseElement.addElement("DEFAULT").addText("Release: " + componentVersion + " build at: " + componentReleaseDate);
 		}
 	}
 
