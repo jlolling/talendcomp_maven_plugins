@@ -3,7 +3,7 @@
 This plugin is bound to the phase `install` and performes for a talend component following tasks:
 * adds the necessary libraries according to the project dependencies to the component and deletes obsolete libs
 * Setup the IMPORT tags in the component XML configuration file
-* Setup the release date tag of the component
+* Setup the release date tag of the component and adds in the advanced settings a label showing release date and version
 * Setup the component version according to the project version
 * Checks the message properties (only the default) if all necessary message keys are present
 
