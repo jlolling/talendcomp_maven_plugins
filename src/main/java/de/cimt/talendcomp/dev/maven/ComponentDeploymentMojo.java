@@ -10,11 +10,12 @@ import org.apache.maven.plugins.annotations.Execute;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
+import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.apache.maven.project.MavenProject;
 
 import de.cimt.talendcomp.dev.ComponentUtil;
 
-@Mojo( name = "component", defaultPhase = LifecyclePhase.INSTALL )
+@Mojo( name = "component", requiresDependencyResolution = ResolutionScope.COMPILE, defaultPhase = LifecyclePhase.INSTALL )
 @Execute( goal = "component", phase = LifecyclePhase.INSTALL )
 public class ComponentDeploymentMojo extends AbstractMojo {
 
@@ -43,16 +44,15 @@ public class ComponentDeploymentMojo extends AbstractMojo {
 		util.setComponentName(componentName);
 		util.setComponentVersion(componentVersion);
 		util.setComponentReleaseDate(componentReleaseDate);
-		// TODO add dependencies to the util
 		getLog().info("Check dependencies and collect artifact jar files...");
 		@SuppressWarnings("unchecked")
-		Set<Artifact> artifacts = project.getDependencyArtifacts();
+		Set<Artifact> artifacts = project.getArtifacts();	
 		for (Artifact a : artifacts) {
-			if ("compile".equals(a.getScope())) {
+			if ("provided".equals(a.getScope()) == false) {
 				String path = a.getFile().getAbsolutePath();
 				try {
 					util.addJarFile(path);
-					getLog().info("    file: " + path);
+					getLog().info("    file: " + path + " scope: " + a.getScope());
 				} catch (Exception e) {
 					throw new MojoExecutionException("Artifact: " + a + ": failed get jar file: " + path);
 				}
@@ -100,5 +100,5 @@ public class ComponentDeploymentMojo extends AbstractMojo {
 		}
 		getLog().info("Done.");
 	}
-
+	
 }
