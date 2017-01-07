@@ -1,5 +1,6 @@
 package de.cimt.talendcomp.dev.maven;
 
+import java.util.List;
 import java.util.Set;
 
 import org.apache.maven.artifact.Artifact;
@@ -33,7 +34,8 @@ public class ComponentDeploymentMojo extends AbstractMojo {
     private boolean addReleaseLabel;
 	@Parameter(defaultValue = "true")
     private boolean checkMessageProperties;
-	
+	@Parameter(defaultValue = "false")
+    private boolean noJars;
 	
 	@Override
 	public void execute() throws MojoExecutionException, MojoFailureException {
@@ -43,31 +45,33 @@ public class ComponentDeploymentMojo extends AbstractMojo {
 		if (componentBaseDir == null) {
 			throw new MojoFailureException("componentBaseDir is not set!");
 		}
-		getLog().info("Setup component: " + componentName + " with base dir: " + componentBaseDir);
+		getLog().info("############ Setup component: " + componentName + " with base dir: " + componentBaseDir);
 		ComponentUtil util = new ComponentUtil();
 		util.setComponentBaseDir(componentBaseDir);
 		util.setComponentName(componentName);
 		util.setComponentVersion(componentVersion);
 		util.setComponentReleaseDate(componentReleaseDate);
-		getLog().info("Check dependencies and collect artifact jar files...");
-		Artifact mainArtifact = project.getArtifact();
-		if (mainArtifact != null) {
-			try {
-				util.addJarFile(mainArtifact.getFile().getAbsolutePath());
-			} catch (Exception e) {
-				throw new MojoExecutionException("Main artifact: " + mainArtifact + ": failed get jar file: " + mainArtifact.getFile().getAbsolutePath());
-			}
-		}
-		@SuppressWarnings("unchecked")
-		Set<Artifact> artifacts = project.getArtifacts();
-		for (Artifact a : artifacts) {
-			if ("provided".equals(a.getScope()) == false) {
-				String path = a.getFile().getAbsolutePath();
+		if (noJars == false) {
+			getLog().info("Check dependencies and collect artifact jar files...");
+			Artifact mainArtifact = project.getArtifact();
+			if (mainArtifact != null) {
 				try {
-					util.addJarFile(path);
-					getLog().info("    file: " + path + " scope: " + a.getScope());
+					util.addJarFile(mainArtifact.getFile().getAbsolutePath());
 				} catch (Exception e) {
-					throw new MojoExecutionException("Artifact: " + a + ": failed get jar file: " + path);
+					throw new MojoExecutionException("Main artifact: " + mainArtifact + ": failed get jar file: " + mainArtifact.getFile().getAbsolutePath());
+				}
+			}
+			@SuppressWarnings("unchecked")
+			Set<Artifact> artifacts = project.getArtifacts();
+			for (Artifact a : artifacts) {
+				if ("provided".equals(a.getScope()) == false) {
+					String path = a.getFile().getAbsolutePath();
+					try {
+						util.addJarFile(path);
+						getLog().info("    file: " + path + " scope: " + a.getScope());
+					} catch (Exception e) {
+						throw new MojoExecutionException("Artifact: " + a + ": failed get jar file: " + path);
+					}
 				}
 			}
 		}
@@ -87,18 +91,22 @@ public class ComponentDeploymentMojo extends AbstractMojo {
 			MojoFailureException me = new MojoFailureException("Remove previous jars from component failed: " + e.getMessage(), e);
 			throw me;
 		}
-		getLog().info("Copy jars into component...");
-		try {
-			int count = util.copyJars();
-			getLog().info(count + " jars copied.");
-		} catch (Exception e) {
-			MojoFailureException me = new MojoFailureException("Copy jars into component failed: " + e.getMessage(), e);
-			throw me;
+		if (noJars == false) {
+			try {
+				getLog().info("Copy jars into component...");
+				int count = util.copyJars();
+				getLog().info(count + " jars copied.");
+			} catch (Exception e) {
+				MojoFailureException me = new MojoFailureException("Copy jars into component failed: " + e.getMessage(), e);
+				throw me;
+			}
 		}
 		getLog().info("Setup component XML configuration...");
 		try {
-			getLog().info("    setup IMPORTs");
-			util.setupXMLImports();
+			if (noJars == false) {
+				getLog().info("    setup IMPORTs");
+				util.setupXMLImports();
+			}
 			if (addReleaseLabel) {
 				getLog().info("    add RELEASE_LABEL");
 				util.setupXMLReleaseLabel();
@@ -119,15 +127,22 @@ public class ComponentDeploymentMojo extends AbstractMojo {
 		if (checkMessageProperties) {
 			getLog().info("Check message properties...");
 			try {
-				String missingProperties = util.checkMissingMessageProperties();
+				String fileName = util.checkMissingMessageProperties();
+				getLog().info("Read message properties file: " + fileName);
+				List<String> missingProperties = util.getListMissingMessageProperties();
 				if (missingProperties != null && missingProperties.isEmpty() == false) {
-					throw new MojoFailureException("Found missing properties:\n" + missingProperties);
+					StringBuilder sb = new StringBuilder();
+					for (String key : missingProperties) {
+						sb.append(key);
+						sb.append("\n");
+					}
+					throw new MojoFailureException("Found " + missingProperties.size() + " missing message properties:\n" + sb.toString());
 				}
 			} catch (Exception e) {
 				if (e instanceof MojoFailureException) {
 					throw (MojoFailureException) e;
 				} else {
-					MojoFailureException me = new MojoFailureException("Check message properties failed: " + e.getMessage(), e);
+					MojoFailureException me = new MojoFailureException("Check message message properties failed: " + e.getMessage(), e);
 					throw me;
 				}
 			}

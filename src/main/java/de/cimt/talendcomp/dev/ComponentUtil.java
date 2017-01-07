@@ -35,6 +35,7 @@ public class ComponentUtil {
 	private SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
 	private File messagePropertiesFile = null;
 	private Properties messages = new Properties();
+	private List<String> listMissingMessageProperties = new ArrayList<String>();
 	
 	public void addJarFile(String jarFilePath) throws Exception {
 		File jar = new File(jarFilePath);
@@ -244,11 +245,11 @@ public class ComponentUtil {
 				.addAttribute("FIELD", "LABEL")
 				.addAttribute("COLOR", "0;0;0")
 				.addAttribute("NUM_ROW", "900");
-			releaseElement.addElement("DEFAULT").addText("Release: " + componentVersion + " build at: " + componentReleaseDate);
+			releaseElement.addElement("DEFAULT").addText("Release: " + componentVersion + " build at: " + getReleaseDate());
 		}
 	}
 
-	private void readDefaultMessageProperties() throws Exception {
+	private String readDefaultMessageProperties() throws Exception {
 		if (componentBaseDir == null) {
 			throw new IllegalStateException("componentBaseDir not set!");
 		}
@@ -263,24 +264,51 @@ public class ComponentUtil {
 		FileInputStream in = new FileInputStream(messagePropertiesFile);
 		messages.load(in);
 		in.close();
+		return messagePropertiesFile.getAbsolutePath();
 	}
 	
+	@SuppressWarnings("unchecked")
 	public String checkMissingMessageProperties() throws Exception {
-		readDefaultMessageProperties();
-		StringBuilder missingProperties = new StringBuilder();
-		// read parameter names
-		@SuppressWarnings("unchecked")
+		String fileName = readDefaultMessageProperties();
+		listMissingMessageProperties.clear();
+		// read simple parameter names
 		List<Node> paramNameNodes = xmlDoc.selectNodes("/COMPONENT/*/PARAMETER[@FIELD!='LABEL']/@NAME");
 		for (Node node : paramNameNodes) {
-			String name = node.getStringValue() + ".NAME";
-			if ("PROPERTY.NAME".equals(name) == false) {
-				if (messages.containsKey(name) == false) {
-					missingProperties.append(name);
-					missingProperties.append("\n");
+			String name = node.getStringValue().trim();
+			if ("PROPERTY".equals(name) == false) {
+				String key = name + ".NAME";
+				if (messages.containsKey(key) == false) {
+					listMissingMessageProperties.add(key);
 				}
 			}
 		}
-		return missingProperties.toString();
+		// read closed list parameters
+		paramNameNodes = xmlDoc.selectNodes("/COMPONENT/*/PARAMETER[@FIELD ='CLOSED_LIST' or @FIELD='TABLE']/@NAME");
+		for (Node node : paramNameNodes) {
+			String name = node.getStringValue().trim();
+			List<Node> itemNodes1 = xmlDoc.selectNodes("/COMPONENT/*/PARAMETER[@NAME='" + name + "']/ITEMS/ITEM/@NAME");
+			for (Node itemNode1 : itemNodes1) {
+				String itemNodeName1 = itemNode1.getStringValue().trim();
+				String key1 = name + ".ITEM." + itemNodeName1;
+				if (messages.containsKey(key1) == false) {
+					listMissingMessageProperties.add(key1);
+				}
+				// check list in items
+				List<Node> itemNodes2 = xmlDoc.selectNodes("/COMPONENT/*/PARAMETER[@NAME='" + name + "']/ITEMS/ITEM[@NAME='" + itemNodeName1 + "']/ITEMS/ITEM/@NAME");
+				for (Node itemNode2 : itemNodes2) {
+					String itemNodeName2 = itemNode2.getStringValue().trim();
+					String key2 = key1 + ".ITEM." + itemNodeName2;
+					if (messages.containsKey(key2) == false) {
+						listMissingMessageProperties.add(key2);
+					}
+				}
+			}
+		}
+		return fileName;
+	}
+
+	public List<String> getListMissingMessageProperties() {
+		return listMissingMessageProperties;
 	}
 	
 }
