@@ -38,9 +38,6 @@ To use it in your own Talend component project use this plugin configuration:
 				</goals>
 				<configuration>
 					<componentName>tComponent2</componentName>
-					<componentBaseDir>${project.basedir}/talend_component</componentBaseDir>
-					<componentVersion>${project.version}</componentVersion>
-					<componentReleaseDate>20170106</componentReleaseDate>
 					<noJars>true</noJars>
 					<checkMessageProperties>true</checkMessageProperties>
 				</configuration>
