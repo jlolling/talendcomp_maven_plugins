@@ -31,6 +31,9 @@ public class ComponentDeploymentMojo extends AbstractMojo {
     private MavenProject project;
 	@Parameter(defaultValue = "true")
     private boolean addReleaseLabel;
+	@Parameter(defaultValue = "true")
+    private boolean checkMessageProperties;
+	
 	
 	@Override
 	public void execute() throws MojoExecutionException, MojoFailureException {
@@ -102,18 +105,34 @@ public class ComponentDeploymentMojo extends AbstractMojo {
 			}
 			getLog().info("Done.");
 		} catch (Exception e) {
-			MojoFailureException me = new MojoFailureException("Setup component XML coniguration failed: " + e.getMessage(), e);
+			MojoFailureException me = new MojoFailureException("Setup component XML configuration failed: " + e.getMessage(), e);
 			throw me;
 		}
-		getLog().info("Write back component XML coniguration...");
+		getLog().info("Write back component XML configuration...");
 		try {
 			String xmlFilePath = util.writeXmlConfiguration();
 			getLog().info("XML configuration file: " + xmlFilePath + " sucessfully written.");
 		} catch (Exception e) {
-			MojoFailureException me = new MojoFailureException("Write back component XML coniguration failed: " + e.getMessage(), e);
+			MojoFailureException me = new MojoFailureException("Write back component XML configuration failed: " + e.getMessage(), e);
 			throw me;
 		}
-		getLog().info("Done.");
+		if (checkMessageProperties) {
+			getLog().info("Check message properties...");
+			try {
+				String missingProperties = util.checkMissingMessageProperties();
+				if (missingProperties != null && missingProperties.isEmpty() == false) {
+					throw new MojoFailureException("Found missing properties:\n" + missingProperties);
+				}
+			} catch (Exception e) {
+				if (e instanceof MojoFailureException) {
+					throw (MojoFailureException) e;
+				} else {
+					MojoFailureException me = new MojoFailureException("Check message properties failed: " + e.getMessage(), e);
+					throw me;
+				}
+			}
+		}
+		getLog().info("Finished.");
 	}
 	
 }

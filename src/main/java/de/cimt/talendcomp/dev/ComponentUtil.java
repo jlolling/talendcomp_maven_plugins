@@ -14,6 +14,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Properties;
 
 import org.dom4j.Document;
 import org.dom4j.DocumentHelper;
@@ -32,6 +33,8 @@ public class ComponentUtil {
 	private Document xmlDoc = null;
 	private List<File> listJars = new ArrayList<File>();
 	private SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+	private File messagePropertiesFile = null;
+	private Properties messages = new Properties();
 	
 	public void addJarFile(String jarFilePath) throws Exception {
 		File jar = new File(jarFilePath);
@@ -44,20 +47,41 @@ public class ComponentUtil {
 	public String getComponentName() {
 		return componentName;
 	}
+	
 	public void setComponentName(String componentName) {
 		this.componentName = componentName;
 	}
+	
 	public String getComponentBaseDir() {
 		return componentBaseDir;
 	}
+	
 	public void setComponentBaseDir(String componentBaseDir) {
 		this.componentBaseDir = componentBaseDir;
 	}
+	
 	public String getComponentVersion() {
 		return componentVersion;
 	}
+	
 	public void setComponentVersion(String componentVersion) {
 		this.componentVersion = componentVersion;
+	}
+	
+	public String getComponentReleaseDate() {
+		return componentReleaseDate;
+	}
+	
+	public void setComponentReleaseDate(String componentReleaseDate) {
+		this.componentReleaseDate = componentReleaseDate;
+	}
+	
+	public boolean isAddReleaseInfoAsLabel() {
+		return addReleaseInfoAsLabel;
+	}
+	
+	public void setAddReleaseInfoAsLabel(boolean addReleaseInfoAsLabel) {
+		this.addReleaseInfoAsLabel = addReleaseInfoAsLabel;
 	}
 	
 	public void execute() throws Exception {
@@ -101,7 +125,7 @@ public class ComponentUtil {
 		File dir = new File(componentBaseDir, componentName);
 		File xmlFile = new File(dir, componentName + "_java.xml");
 		if (xmlFile.exists() == false) {
-			throw new Exception("XML configuration file: " + xmlFile.getAbsolutePath() + " does not exist!");
+			throw new Exception("XML configuration file: " + xmlFile.getAbsolutePath() + " does not exist, but is mandatory for a Talend component!");
 		}
 		OutputFormat format = OutputFormat.createPrettyPrint();
 		XMLWriter writer = new XMLWriter(new FileOutputStream(xmlFile), format );
@@ -224,20 +248,39 @@ public class ComponentUtil {
 		}
 	}
 
-	public String getComponentReleaseDate() {
-		return componentReleaseDate;
+	private void readDefaultMessageProperties() throws Exception {
+		if (componentBaseDir == null) {
+			throw new IllegalStateException("componentBaseDir not set!");
+		}
+		if (componentName == null) {
+			throw new IllegalStateException("componentName not set!");
+		}
+		File dir = new File(componentBaseDir, componentName);
+		messagePropertiesFile = new File(dir, componentName + "_messages.properties");
+		if (messagePropertiesFile.exists() == false) {
+			throw new Exception("Message properties file: " + messagePropertiesFile.getAbsolutePath() + " does not exist, but is mandatory for a Talend component!");
+		}
+		FileInputStream in = new FileInputStream(messagePropertiesFile);
+		messages.load(in);
+		in.close();
 	}
-
-	public void setComponentReleaseDate(String componentReleaseDate) {
-		this.componentReleaseDate = componentReleaseDate;
-	}
-
-	public boolean isAddReleaseInfoAsLabel() {
-		return addReleaseInfoAsLabel;
-	}
-
-	public void setAddReleaseInfoAsLabel(boolean addReleaseInfoAsLabel) {
-		this.addReleaseInfoAsLabel = addReleaseInfoAsLabel;
+	
+	public String checkMissingMessageProperties() throws Exception {
+		readDefaultMessageProperties();
+		StringBuilder missingProperties = new StringBuilder();
+		// read parameter names
+		@SuppressWarnings("unchecked")
+		List<Node> paramNameNodes = xmlDoc.selectNodes("/COMPONENT/*/PARAMETER[@FIELD!='LABEL']/@NAME");
+		for (Node node : paramNameNodes) {
+			String name = node.getStringValue() + ".NAME";
+			if ("PROPERTY.NAME".equals(name) == false) {
+				if (messages.containsKey(name) == false) {
+					missingProperties.append(name);
+					missingProperties.append("\n");
+				}
+			}
+		}
+		return missingProperties.toString();
 	}
 	
 }
