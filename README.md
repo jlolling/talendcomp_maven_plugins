@@ -31,7 +31,7 @@ To use it in your own Talend component project use this plugin configuration:
 				</configuration>
 			</execution>
 			<execution>
-				<id>execution-1</id>
+				<id>execution-2</id>
 				<phase>install</phase>
 				<goals>
 					<goal>component</goal>
