@@ -1,37 +1,62 @@
 #Maven plugin to setup a Talend component
 
 This plugin does for a talend component:
-* adds the necessary libraries according to the project dependencies to the component
+* adds the necessary libraries according to the project dependencies to the component and deletes obsolete libs
 * Setup the IMPORT tags in the component XML configuration file
 * Setup the release date tag of the component
-* Setup the component version cording to the project version
+* Setup the component version according to the project version
+* Checks the message properties (only the default) if all necessary message keys are present
 
 To use it in your own Talend component project use this plugin configuration:
+(If you have more than one component in your project, use multiple executions, this example assumes 2 components)
 ```
 	<plugin>
 		<groupId>de.cimt.talendcomp</groupId>
 		<artifactId>cimt-talendcomp-maven-plugin</artifactId>
 		<version>1.0</version>
-		<configuration>
-			<componentName>tTest</componentName>
-			<componentBaseDir>${project.basedir}/talend_component</componentBaseDir>
-			<componentVersion>${project.version}</componentVersion>
-			<componentReleaseDate>20170106</componentReleaseDate>
-		</configuration>
 		<executions>
 			<execution>
+				<id>execution-1</id>
 				<phase>install</phase>
 				<goals>
 					<goal>component</goal>
 				</goals>
+				<configuration>
+					<componentName>tComponent1</componentName>
+					<componentBaseDir>${project.basedir}/talend_component</componentBaseDir>
+					<componentVersion>${project.version}</componentVersion>
+					<componentReleaseDate>20170106</componentReleaseDate>
+					<noJars>false</noJars>
+					<checkMessageProperties>true</checkMessageProperties>
+				</configuration>
+			</execution>
+			<execution>
+				<id>execution-1</id>
+				<phase>install</phase>
+				<goals>
+					<goal>component</goal>
+				</goals>
+				<configuration>
+					<componentName>tComponent2</componentName>
+					<componentBaseDir>${project.basedir}/talend_component</componentBaseDir>
+					<componentVersion>${project.version}</componentVersion>
+					<componentReleaseDate>20170106</componentReleaseDate>
+					<noJars>true</noJars>
+					<checkMessageProperties>true</checkMessageProperties>
+				</configuration>
 			</execution>
 		</executions>
 	</plugin>
 
 ```
 Only the configuration parameter `componentName` is mandatory.
+
 The other parameters will be filled with default values (the current values here).
-The parameter `componentReleaseDate` will be filled with the current date.
+
+The parameter `componentReleaseDate` will be filled with the current date if it is missing.
+
+The parameter `noJars` prevents the plugin from adding jar files and adding IMPORT tags. This is useful if you have multiple components depending from another component which carries all libraries.
+
 The result e.g. a list of the necessary modules within a Talend component XML configuration.
 Example:
 ```
