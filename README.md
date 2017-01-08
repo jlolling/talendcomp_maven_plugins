@@ -39,7 +39,6 @@ To use it in your own Talend component project use this plugin configuration:
 				<configuration>
 					<componentName>tComponent2</componentName>
 					<noJars>true</noJars>
-					<checkMessageProperties>true</checkMessageProperties>
 				</configuration>
 			</execution>
 		</executions>
