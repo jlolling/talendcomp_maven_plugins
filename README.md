@@ -8,15 +8,15 @@ This plugin is bound to the phase `install` and performes for a talend component
 * Checks the message properties (only the default) if all necessary message keys are present
 
 To use it in your own Talend component project use this plugin configuration:
-(If you have more than one component in your project, use multiple executions, this example assumes 2 components)
+(If you have more than one component in your project, use multiple executions, this example assumes 2 components. It is helpful to use the component name as id)
 ```
 	<plugin>
 		<groupId>de.cimt.talendcomp</groupId>
 		<artifactId>cimt-talendcomp-maven-plugin</artifactId>
-		<version>1.1</version>
+		<version>1.2</version>
 		<executions>
 			<execution>
-				<id>execution-1</id>
+				<id>tComponent1</id>
 				<phase>install</phase>
 				<goals>
 					<goal>component</goal>
@@ -32,7 +32,7 @@ To use it in your own Talend component project use this plugin configuration:
 				</configuration>
 			</execution>
 			<execution>
-				<id>execution-2</id>
+				<id>tComponent2</id>
 				<phase>install</phase>
 				<goals>
 					<goal>component</goal>
@@ -58,7 +58,7 @@ If some components needs dedicated jars and other don't you can use the `jarExcl
 
 This is a typical maven log output:
 ```
-[INFO] --- cimt-talendcomp-maven-plugin:1.1:component (tFileExcelWorkbookOpen) @ cimt-talendcomp-excel ---
+[INFO] --- cimt-talendcomp-maven-plugin:1.2:component (tFileExcelWorkbookOpen) @ cimt-talendcomp-excel ---
 [INFO] ############ Setup component: tFileExcelWorkbookOpen with base dir: /Volumes/Data/Talend/workspace_talend_comp/talendcomp_tFileExcel/talend_component
 [INFO] Check dependencies and collect artifact jar files...
 [INFO]     file: /Volumes/Data/Talend/workspace_talend_comp/talendcomp_tFileExcel/target/cimt-talendcomp-excel-8.0.jar
@@ -109,10 +109,10 @@ Example:
 
 This plugin is not yet available via Maven Central. I am going to publish it there.
 For the moment you can download it here:
-http://jan-lolling.de/talend/cimt-talendcomp-maven-plugin-1.1.jar
+http://jan-lolling.de/talend/cimt-talendcomp-maven-plugin-1.2.jar
 
 and install it with this command (please setup your file path here according to your download location)
 ```
-mvn install:install-file -Dfile=Downloads/cimt-talendcomp-maven-plugin-1.1.jar -DgroupId=de.cimt.talendcomp \
+mvn install:install-file -Dfile=Downloads/cimt-talendcomp-maven-plugin-1.2.jar -DgroupId=de.cimt.talendcomp \
     -DartifactId=cimt-talendcomp-maven-plugin -Dversion=1.1 -Dpackaging=jar
 ```
