@@ -38,13 +38,13 @@ public class ComponentDeploymentMojo extends AbstractMojo {
 	@Parameter(defaultValue = "false")
     private boolean noJars;
 	@Parameter
-    private String excludePattern;
+    private String jarExcludePattern;
 	private Pattern pattern = null;
 	
 	private boolean filterJarFile(String jarFileName) {
-		if (excludePattern != null && excludePattern.trim().isEmpty() == false) {
+		if (jarExcludePattern != null && jarExcludePattern.trim().isEmpty() == false) {
 			if (pattern == null) {
-				pattern = Pattern.compile(excludePattern, Pattern.CASE_INSENSITIVE);
+				pattern = Pattern.compile(jarExcludePattern, Pattern.CASE_INSENSITIVE);
 			}
 			return pattern
 					.matcher(jarFileName)
@@ -70,8 +70,8 @@ public class ComponentDeploymentMojo extends AbstractMojo {
 		util.setComponentReleaseDate(componentReleaseDate);
 		if (noJars == false) {
 			getLog().info("Check dependencies and collect artifact jar files...");
-			if (excludePattern != null && excludePattern.trim().isEmpty() == false) {
-				getLog().info("   use exclude regex pattern: " + excludePattern);
+			if (jarExcludePattern != null && jarExcludePattern.trim().isEmpty() == false) {
+				getLog().info("   use exclude regex pattern: " + jarExcludePattern);
 			}
 			Artifact mainArtifact = project.getArtifact();
 			if (mainArtifact != null) {

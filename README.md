@@ -28,6 +28,7 @@ To use it in your own Talend component project use this plugin configuration:
 					<componentReleaseDate>20170106</componentReleaseDate>
 					<noJars>false</noJars>
 					<checkMessageProperties>true</checkMessageProperties>
+					<jarExcludePattern>log4j</jarExcludePattern>
 				</configuration>
 			</execution>
 			<execution>
@@ -52,6 +53,8 @@ The other parameters will be filled with default values (the current values here
 The parameter `componentReleaseDate` will be filled with the current date if it is missing.
 
 The parameter `noJars` prevents the plugin from adding jar files and adding IMPORT tags. This is useful if you have multiple components depending from another component which carries all libraries.
+
+If some components needs dedicated jars and other don't you can use the `jarExcludePattern` to exclude with regex expressions jars from being used with the current executed component.
 
 This is a typical maven log output:
 ```
