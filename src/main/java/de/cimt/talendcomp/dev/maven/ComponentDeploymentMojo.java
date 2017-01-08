@@ -101,19 +101,19 @@ public class ComponentDeploymentMojo extends AbstractMojo {
 				throw me;
 			}
 		}
-		getLog().info("Setup component XML configuration...");
+		getLog().info("Process component XML configuration...");
 		try {
 			if (noJars == false) {
-				getLog().info("    setup IMPORTs");
+				getLog().info("    setup imports...");
 				util.setupXMLImports();
 			}
 			if (addReleaseLabel) {
-				getLog().info("    add RELEASE_LABEL");
+				getLog().info("    setup release and version info...");
 				util.setupXMLReleaseLabel();
 			}
 			getLog().info("Done.");
 		} catch (Exception e) {
-			MojoFailureException me = new MojoFailureException("Setup component XML configuration failed: " + e.getMessage(), e);
+			MojoFailureException me = new MojoFailureException("Process component XML configuration failed: " + e.getMessage(), e);
 			throw me;
 		}
 		getLog().info("Write back component XML configuration...");
