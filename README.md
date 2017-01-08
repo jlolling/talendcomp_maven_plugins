@@ -54,13 +54,53 @@ The parameter `componentReleaseDate` will be filled with the current date if it 
 
 The parameter `noJars` prevents the plugin from adding jar files and adding IMPORT tags. This is useful if you have multiple components depending from another component which carries all libraries.
 
+This is a typical maven log output:
+```
+[INFO] --- cimt-talendcomp-maven-plugin:1.1:component (tFileExcelWorkbookOpen) @ cimt-talendcomp-excel ---
+[INFO] ############ Setup component: tFileExcelWorkbookOpen with base dir: /Volumes/Data/Talend/workspace_talend_comp/talendcomp_tFileExcel/talend_component
+[INFO] Check dependencies and collect artifact jar files...
+[INFO]     file: /Volumes/Data/Talend/workspace_talend_comp/talendcomp_tFileExcel/target/cimt-talendcomp-excel-8.0.jar
+[INFO]     file: /Users/jan/.m2/repository/org/apache/poi/poi-ooxml/3.15/poi-ooxml-3.15.jar scope: compile
+[INFO]     file: /Users/jan/.m2/repository/org/apache/poi/poi/3.15/poi-3.15.jar scope: compile
+[INFO]     file: /Users/jan/.m2/repository/commons-codec/commons-codec/1.10/commons-codec-1.10.jar scope: compile
+[INFO]     file: /Users/jan/.m2/repository/org/apache/commons/commons-collections4/4.1/commons-collections4-4.1.jar scope: compile
+[INFO]     file: /Users/jan/.m2/repository/org/apache/poi/poi-ooxml-schemas/3.15/poi-ooxml-schemas-3.15.jar scope: compile
+[INFO]     file: /Users/jan/.m2/repository/org/apache/xmlbeans/xmlbeans/2.6.0/xmlbeans-2.6.0.jar scope: compile
+[INFO]     file: /Users/jan/.m2/repository/com/github/virtuald/curvesapi/1.04/curvesapi-1.04.jar scope: compile
+[INFO]     file: /Users/jan/.m2/repository/xalan/xalan/2.7.2/xalan-2.7.2.jar scope: compile
+[INFO]     file: /Users/jan/.m2/repository/xalan/serializer/2.7.2/serializer-2.7.2.jar scope: compile
+[INFO] Read component XML configuration...
+[INFO] XML configuration file: /Volumes/Data/Talend/workspace_talend_comp/talendcomp_tFileExcel/talend_component/tFileExcelWorkbookOpen/tFileExcelWorkbookOpen_java.xml sucessfully read
+[INFO] Remove previous jars from component...
+[INFO] 10 old jars deleted.
+[INFO] Copy jars into component...
+[INFO] 10 jars copied.
+[INFO] Process component XML configuration...
+[INFO]     setup imports...
+[INFO]     setup release and version info...
+[INFO] Done.
+[INFO] Write back component XML configuration...
+[INFO] XML configuration file: /Volumes/Data/Talend/workspace_talend_comp/talendcomp_tFileExcel/talend_component/tFileExcelWorkbookOpen/tFileExcelWorkbookOpen_java.xml sucessfully written.
+[INFO] Check message properties...
+[INFO] Read message properties file: /Volumes/Data/Talend/workspace_talend_comp/talendcomp_tFileExcel/talend_component/tFileExcelWorkbookOpen/tFileExcelWorkbookOpen_messages.properties
+[INFO] Finished.
+```
+
 The result e.g. a list of the necessary modules within a Talend component XML configuration.
 Example:
 ```
   <CODEGENERATION> 
     <IMPORTS> 
+      <IMPORT NAME="cimt-talendcomp-excel" MODULE="cimt-talendcomp-excel-8.0.jar" REQUIRED="true"/>
       <IMPORT NAME="poi-ooxml" MODULE="poi-ooxml-3.15.jar" REQUIRED="true"/>
+      <IMPORT NAME="poi" MODULE="poi-3.15.jar" REQUIRED="true"/>
+      <IMPORT NAME="commons-codec" MODULE="commons-codec-1.10.jar" REQUIRED="true"/>
+      <IMPORT NAME="commons-collections4" MODULE="commons-collections4-4.1.jar" REQUIRED="true"/>
+      <IMPORT NAME="poi-ooxml-schemas" MODULE="poi-ooxml-schemas-3.15.jar" REQUIRED="true"/>
+      <IMPORT NAME="xmlbeans" MODULE="xmlbeans-2.6.0.jar" REQUIRED="true"/>
+      <IMPORT NAME="curvesapi" MODULE="curvesapi-1.04.jar" REQUIRED="true"/>
       <IMPORT NAME="xalan" MODULE="xalan-2.7.2.jar" REQUIRED="true"/>
+      <IMPORT NAME="serializer" MODULE="serializer-2.7.2.jar" REQUIRED="true"/>
     </IMPORTS> 
   </CODEGENERATION>  
 ```
