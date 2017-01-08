@@ -181,7 +181,12 @@ public class ComponentUtil {
 	private String getJarCommonName(String fileName) {
 		int pos = fileName.lastIndexOf("-");
 		if (pos > 0) {
-			return fileName.substring(0, pos);
+			if (fileName.contains("SNAPSHOT")) {
+				int pos2 = fileName.lastIndexOf("-", pos - 1);
+				return fileName.substring(0, pos2);
+			} else {
+				return fileName.substring(0, pos);
+			}
 		} else {
 			return fileName;
 		}
