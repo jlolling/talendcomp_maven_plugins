@@ -13,7 +13,7 @@ To use it in your own Talend component project use this plugin configuration:
 	<plugin>
 		<groupId>de.cimt.talendcomp</groupId>
 		<artifactId>cimt-talendcomp-maven-plugin</artifactId>
-		<version>1.0</version>
+		<version>1.1</version>
 		<executions>
 			<execution>
 				<id>execution-1</id>
