@@ -2,6 +2,7 @@ package de.cimt.talendcomp.dev.maven;
 
 import java.util.List;
 import java.util.Set;
+import java.util.regex.Pattern;
 
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.plugin.AbstractMojo;
@@ -36,6 +37,22 @@ public class ComponentDeploymentMojo extends AbstractMojo {
     private boolean checkMessageProperties;
 	@Parameter(defaultValue = "false")
     private boolean noJars;
+	@Parameter
+    private String excludePattern;
+	private Pattern pattern = null;
+	
+	private boolean filterJarFile(String jarFileName) {
+		if (excludePattern != null && excludePattern.trim().isEmpty() == false) {
+			if (pattern == null) {
+				pattern = Pattern.compile(excludePattern, Pattern.CASE_INSENSITIVE);
+			}
+			return pattern
+					.matcher(jarFileName)
+					.find() == false;
+		} else {
+			return true;
+		}
+	}
 	
 	@Override
 	public void execute() throws MojoExecutionException, MojoFailureException {
@@ -53,14 +70,19 @@ public class ComponentDeploymentMojo extends AbstractMojo {
 		util.setComponentReleaseDate(componentReleaseDate);
 		if (noJars == false) {
 			getLog().info("Check dependencies and collect artifact jar files...");
+			if (excludePattern != null && excludePattern.trim().isEmpty() == false) {
+				getLog().info("   use exclude regex pattern: " + excludePattern);
+			}
 			Artifact mainArtifact = project.getArtifact();
 			if (mainArtifact != null) {
 				String path = mainArtifact.getFile().getAbsolutePath();
-				try {
-					util.addJarFile(path);
-					getLog().info("    file: " + path);
-				} catch (Exception e) {
-					throw new MojoExecutionException("Main artifact: " + mainArtifact + ": failed get jar file: " + mainArtifact.getFile().getAbsolutePath());
+				if (filterJarFile(path)) {
+					try {
+						util.addJarFile(path);
+						getLog().info("    file: " + path);
+					} catch (Exception e) {
+						throw new MojoExecutionException("Main artifact: " + mainArtifact + ": failed get jar file: " + mainArtifact.getFile().getAbsolutePath());
+					}
 				}
 			}
 			@SuppressWarnings("unchecked")
@@ -68,11 +90,13 @@ public class ComponentDeploymentMojo extends AbstractMojo {
 			for (Artifact a : artifacts) {
 				if ("provided".equals(a.getScope()) == false) {
 					String path = a.getFile().getAbsolutePath();
-					try {
-						util.addJarFile(path);
-						getLog().info("    file: " + path + " scope: " + a.getScope());
-					} catch (Exception e) {
-						throw new MojoExecutionException("Artifact: " + a + ": failed get jar file: " + path);
+					if (filterJarFile(path)) {
+						try {
+							util.addJarFile(path);
+							getLog().info("    file: " + path + " scope: " + a.getScope());
+						} catch (Exception e) {
+							throw new MojoExecutionException("Artifact: " + a + ": failed get jar file: " + path);
+						}
 					}
 				}
 			}
