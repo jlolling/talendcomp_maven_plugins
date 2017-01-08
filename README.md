@@ -114,5 +114,5 @@ http://jan-lolling.de/talend/cimt-talendcomp-maven-plugin-1.2.jar
 and install it with this command (please setup your file path here according to your download location)
 ```
 mvn install:install-file -Dfile=Downloads/cimt-talendcomp-maven-plugin-1.2.jar -DgroupId=de.cimt.talendcomp \
-    -DartifactId=cimt-talendcomp-maven-plugin -Dversion=1.1 -Dpackaging=jar
+    -DartifactId=cimt-talendcomp-maven-plugin -Dversion=1.2 -Dpackaging=jar
 ```
