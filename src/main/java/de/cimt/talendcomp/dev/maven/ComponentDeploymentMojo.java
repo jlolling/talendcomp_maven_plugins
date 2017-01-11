@@ -17,8 +17,8 @@ import org.apache.maven.project.MavenProject;
 
 import de.cimt.talendcomp.dev.ComponentUtil;
 
-@Mojo(name = "component", requiresDependencyResolution = ResolutionScope.COMPILE, defaultPhase = LifecyclePhase.PROCESS_RESOURCES)
-@Execute(goal = "component", phase = LifecyclePhase.PROCESS_RESOURCES)
+@Mojo(name = "component", requiresDependencyResolution = ResolutionScope.COMPILE, defaultPhase = LifecyclePhase.PACKAGE)
+@Execute(goal = "component", phase = LifecyclePhase.PACKAGE)
 public class ComponentDeploymentMojo extends AbstractMojo {
 
     @Parameter
@@ -86,14 +86,14 @@ public class ComponentDeploymentMojo extends AbstractMojo {
                 }
             }
             @SuppressWarnings("unchecked")
-            Set<Artifact> artifacts = project.getDependencyArtifacts(); // think getArtifacts delivers too much jars 
+            Set<Artifact> artifacts = project.getArtifacts(); 
             for (Artifact a : artifacts) {
-                if ("provided".equals(a.getScope()) == false) { // TODO: just use runtime or null?
+                if ("provided".equals(a.getScope()) == false && "test".equals(a.getScope()) == false) {
                     String path = a.getFile().getAbsolutePath();
                     if (filterJarFile(path)) {
                         try {
                             util.addJarFile(path);
-                            getLog().info("    file: " + path + " scope: " + a.getScope());
+                            getLog().info("    file: " + path);
                         } catch (Exception e) {
                             throw new MojoExecutionException("Artifact: " + a + ": failed get jar file: " + path);
                         }
