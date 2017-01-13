@@ -1,7 +1,10 @@
 package de.cimt.talendcomp.dev;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileFilter;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FilenameFilter;
@@ -15,6 +18,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Properties;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.dom4j.Document;
 import org.dom4j.DocumentHelper;
@@ -27,6 +32,7 @@ public class ComponentUtil {
 	
 	private String componentName = null;
 	private String componentBaseDir = null;
+	private String componentSourceBaseDir = null;
 	private String componentVersion = null;
 	private String componentReleaseDate = null;
 	private boolean addReleaseInfoAsLabel = true;
@@ -36,6 +42,8 @@ public class ComponentUtil {
 	private File messagePropertiesFile = null;
 	private Properties messages = new Properties();
 	private List<String> listMissingMessageProperties = new ArrayList<String>();
+	private static final String ignoreFilePatternStr = ".svn|.git|.DS_Store|.class";
+	private Pattern ignoreFilePattern = null;
 	
 	public void addJarFile(String jarFilePath) throws Exception {
 		File jar = new File(jarFilePath);
@@ -336,6 +344,105 @@ public class ComponentUtil {
 
 	public List<String> getListMissingMessageProperties() {
 		return listMissingMessageProperties;
+	}
+
+	public String getComponentSourceBaseDir() {
+		return componentSourceBaseDir;
+	}
+
+	public void setComponentSourceBaseDir(String componentSourceBaseDir) {
+		this.componentSourceBaseDir = componentSourceBaseDir;
+	}
+	
+	public int copyResources() throws Exception {
+		if (componentName == null) {
+			throw new Exception("componentName not set!");
+		}
+		if (componentSourceBaseDir == null || componentSourceBaseDir.trim().isEmpty()) {
+			throw new Exception("copyResources failed: componentSourceBaseDir is not set!");
+		}
+		File sourceDir = new File(componentSourceBaseDir, componentName);
+		if (sourceDir.exists() == false) {
+			throw new Exception("copyResources failed: sourceDir: " + sourceDir.getAbsolutePath() + " does not exists or is not readable!");
+		}
+		if (componentBaseDir == null || componentBaseDir.trim().isEmpty()) {
+			throw new Exception("copyResources failed: componentBaseDir is not set!");
+		}
+		File targetDir = new File(componentBaseDir, componentName);
+		if (targetDir.exists() == false) {
+			targetDir.mkdirs();
+		} else {
+			cleanTarget(targetDir);
+		}
+		if (targetDir.exists() == false) {
+			throw new Exception("copyResources failed: componentBaseDir: " + targetDir.getAbsolutePath() + " does not exist and cannot be created!");
+		}
+		// select resources
+		File[] sourceFiles = sourceDir.listFiles(new FileFilter() {
+			
+			@Override
+			public boolean accept(File pathname) {
+				Matcher m = getIgnoreFilePattern().matcher(pathname.getAbsolutePath());
+				if (m.find()) {
+					return false;
+				} else {
+					return true;
+				}
+			}
+		});
+		// copy resources
+		int count = 0;
+		for (File source : sourceFiles) {
+			File target = new File(targetDir, source.getName());
+			copyFile(source, target);
+			count++;
+		}
+		return count;
+	}
+	
+	private void cleanTarget(File targetDir) {
+		if (targetDir.exists()) {
+			File[] files = targetDir.listFiles();
+			for (File f : files) {
+				f.delete();
+			}
+		}
+	}
+	
+	private void copyFile(File source, File target) throws Exception {
+		if (source.exists() == false || source.canRead() == false) {
+			throw new Exception("Copy file: " + source.getAbsolutePath() + " failed: file doe not exist.");
+		}
+		BufferedOutputStream bo = new BufferedOutputStream(new FileOutputStream(target));
+		BufferedInputStream bi = new BufferedInputStream(new FileInputStream(source));
+		byte[] buffer = new byte[1024];
+		int len = 0;
+		Exception ex = null;
+		try {
+			while ((len = bi.read(buffer)) != -1) {
+				bo.write(buffer, 0, len);
+			}
+		} catch (Exception e) {
+			ex = e;
+		} finally {
+			if (bo != null) {
+				bo.flush();
+				bo.close();
+			}
+			if (bi != null) {
+				bi.close();
+			}
+		}
+		if (ex != null) {
+			throw ex;
+		}
+	}
+
+	private Pattern getIgnoreFilePattern() {
+		if (ignoreFilePattern == null) {
+			ignoreFilePattern = Pattern.compile(ignoreFilePatternStr);
+		}
+		return ignoreFilePattern;
 	}
 	
 }

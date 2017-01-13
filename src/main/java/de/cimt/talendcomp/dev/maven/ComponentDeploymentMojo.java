@@ -1,5 +1,6 @@
 package de.cimt.talendcomp.dev.maven;
 
+import java.io.File;
 import java.util.List;
 import java.util.Set;
 import java.util.regex.Pattern;
@@ -25,6 +26,8 @@ public class ComponentDeploymentMojo extends AbstractMojo {
     private String componentName;
     @Parameter(defaultValue = "${project.basedir}/talend_component")
     private String componentBaseDir;
+    @Parameter
+    private String copyFromSourceBaseDir;
     @Parameter(defaultValue = "${project.version}")
     private String componentVersion;
     @Parameter
@@ -64,6 +67,10 @@ public class ComponentDeploymentMojo extends AbstractMojo {
         }
         getLog().info("############ Setup component: " + componentName + " with base dir: " + componentBaseDir);
         ComponentUtil util = new ComponentUtil();
+        File baseDir = new File(componentBaseDir);
+        if (baseDir.isAbsolute() == false) {
+        	baseDir = new File(project.getBasedir(), componentBaseDir);
+        }
         util.setComponentBaseDir(componentBaseDir);
         util.setComponentName(componentName);
         util.setComponentVersion(componentVersion);
@@ -101,10 +108,25 @@ public class ComponentDeploymentMojo extends AbstractMojo {
                 }
             }
         }
+        if (copyFromSourceBaseDir != null && copyFromSourceBaseDir.trim().isEmpty() == false) {
+        	try {
+        		File sourceDir = new File(copyFromSourceBaseDir);
+        		if (sourceDir.isAbsolute() == false) {
+        			sourceDir = new File(project.getBasedir().getAbsolutePath(), copyFromSourceBaseDir);
+        		}
+                getLog().info("Clean target and copy resources from source base dir: " + sourceDir.getAbsolutePath());
+        		util.setComponentSourceBaseDir(sourceDir.getAbsolutePath());
+        		int count = util.copyResources();
+                getLog().info("    " + count + " files copied.");
+            } catch (Exception e) {
+                MojoFailureException me = new MojoFailureException("Copy resources from source failed: " + e.getMessage(), e);
+                throw me;
+			}
+        }
         getLog().info("Read component XML configuration...");
         try {
             String xmlFilePath = util.readXmlConfiguration();
-            getLog().info("XML configuration file: " + xmlFilePath + " sucessfully read");
+            getLog().info("    XML configuration file: " + xmlFilePath + " sucessfully read");
         } catch (Exception e) {
             MojoFailureException me = new MojoFailureException("Read XML configuration failed: " + e.getMessage(), e);
             throw me;
@@ -112,7 +134,7 @@ public class ComponentDeploymentMojo extends AbstractMojo {
         getLog().info("Remove previous jars from component...");
         try {
             int count = util.clearComponentJars();
-            getLog().info(count + " old jars deleted.");
+            getLog().info("    " + count + " old jars deleted.");
         } catch (Exception e) {
             MojoFailureException me = new MojoFailureException("Remove previous jars from component failed: " + e.getMessage(), e);
             throw me;
@@ -121,7 +143,7 @@ public class ComponentDeploymentMojo extends AbstractMojo {
             try {
                 getLog().info("Copy jars into component...");
                 int count = util.copyJars();
-                getLog().info(count + " jars copied.");
+                getLog().info("    " + count + " jars copied.");
             } catch (Exception e) {
                 MojoFailureException me = new MojoFailureException("Copy jars into component failed: " + e.getMessage(), e);
                 throw me;
@@ -137,7 +159,7 @@ public class ComponentDeploymentMojo extends AbstractMojo {
                 getLog().info("    setup release and version info...");
                 util.setupXMLReleaseLabel();
             }
-            getLog().info("Done.");
+            getLog().info("    Done.");
         } catch (Exception e) {
             MojoFailureException me = new MojoFailureException("Process component XML configuration failed: " + e.getMessage(), e);
             throw me;
@@ -145,7 +167,7 @@ public class ComponentDeploymentMojo extends AbstractMojo {
         getLog().info("Write back component XML configuration...");
         try {
             String xmlFilePath = util.writeXmlConfiguration();
-            getLog().info("XML configuration file: " + xmlFilePath + " sucessfully written.");
+            getLog().info("    XML configuration file: " + xmlFilePath + " successfully written.");
         } catch (Exception e) {
             MojoFailureException me = new MojoFailureException("Write back component XML configuration failed: " + e.getMessage(), e);
             throw me;
@@ -154,7 +176,7 @@ public class ComponentDeploymentMojo extends AbstractMojo {
             getLog().info("Check message properties...");
             try {
                 String fileName = util.checkMissingMessageProperties();
-                getLog().info("Read message properties file: " + fileName);
+                getLog().info("    Read message properties file: " + fileName);
                 List<String> missingProperties = util.getListMissingMessageProperties();
                 if (missingProperties != null && missingProperties.isEmpty() == false) {
                     StringBuilder sb = new StringBuilder();
