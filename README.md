@@ -1,39 +1,42 @@
 #Maven plugin to setup a Talend component
 
-This plugin is bound to the phase `install` and performes for a talend component following tasks:
+This plugin is bound to the phase `package` and performes for a talend component following tasks:
+* can copy the resources of an component from a source dir to a target dir before starting the processing
 * adds the necessary libraries according to the project dependencies to the component and deletes obsolete libs
 * Setup the IMPORT tags in the component XML configuration file
 * Setup the release date tag of the component and adds in the advanced settings a label showing release date and version
 * Setup the component version according to the project version
 * Checks the message properties (only the default) if all necessary message keys are present
 
-To use it in your own Talend component project use this plugin configuration:
-(If you have more than one component in your project, use multiple executions, this example assumes 2 components. It is helpful to use the component name as id)
+To use it in your own Talend component project use this plugin configuration. You can set configuration parameters in context of an execution of in for all executions.
+If you have more than one component in your project, use multiple executions, this example assumes 2 components. It is helpful to use the component name as id
 ```
 	<plugin>
 		<groupId>de.cimt.talendcomp</groupId>
 		<artifactId>cimt-talendcomp-maven-plugin</artifactId>
-		<version>1.2</version>
+		<version>1.4</version>
+		<configuration>
+			<componentName>tComponent1</componentName>
+			<componentBaseDir>${project.basedir}/talend_component</componentBaseDir>
+			<componentVersion>${project.version}</componentVersion>
+			<checkMessageProperties>true</checkMessageProperties>
+			<copyFromSourceBaseDir>src/talend_component/</copyFromSourceBaseDir>
+		</configuration>
 		<executions>
 			<execution>
 				<id>tComponent1</id>
-				<phase>install</phase>
 				<goals>
 					<goal>component</goal>
 				</goals>
 				<configuration>
 					<componentName>tComponent1</componentName>
-					<componentBaseDir>${project.basedir}/talend_component</componentBaseDir>
-					<componentVersion>${project.version}</componentVersion>
 					<componentReleaseDate>20170106</componentReleaseDate>
 					<noJars>false</noJars>
-					<checkMessageProperties>true</checkMessageProperties>
 					<jarExcludePattern>log4j</jarExcludePattern>
 				</configuration>
 			</execution>
 			<execution>
 				<id>tComponent2</id>
-				<phase>install</phase>
 				<goals>
 					<goal>component</goal>
 				</goals>
@@ -71,20 +74,22 @@ This is a typical maven log output:
 [INFO]     file: /Users/jan/.m2/repository/com/github/virtuald/curvesapi/1.04/curvesapi-1.04.jar scope: compile
 [INFO]     file: /Users/jan/.m2/repository/xalan/xalan/2.7.2/xalan-2.7.2.jar scope: compile
 [INFO]     file: /Users/jan/.m2/repository/xalan/serializer/2.7.2/serializer-2.7.2.jar scope: compile
+[INFO] Clean target and copy resources from source base dir: /Volumes/Data/Talend/workspace_talend_comp/talendcomp_tFileExcel/talend_component
+[INFO]     5 files copied.
 [INFO] Read component XML configuration...
-[INFO] XML configuration file: /Volumes/Data/Talend/workspace_talend_comp/talendcomp_tFileExcel/talend_component/tFileExcelWorkbookOpen/tFileExcelWorkbookOpen_java.xml sucessfully read
+[INFO]     XML configuration file: /Volumes/Data/Talend/workspace_talend_comp/talendcomp_tFileExcel/talend_component/tFileExcelWorkbookOpen/tFileExcelWorkbookOpen_java.xml sucessfully read
 [INFO] Remove previous jars from component...
-[INFO] 10 old jars deleted.
+[INFO]     10 old jars deleted.
 [INFO] Copy jars into component...
-[INFO] 10 jars copied.
+[INFO]     10 jars copied.
 [INFO] Process component XML configuration...
 [INFO]     setup imports...
 [INFO]     setup release and version info...
 [INFO] Done.
 [INFO] Write back component XML configuration...
-[INFO] XML configuration file: /Volumes/Data/Talend/workspace_talend_comp/talendcomp_tFileExcel/talend_component/tFileExcelWorkbookOpen/tFileExcelWorkbookOpen_java.xml sucessfully written.
+[INFO]     XML configuration file: /Volumes/Data/Talend/workspace_talend_comp/talendcomp_tFileExcel/talend_component/tFileExcelWorkbookOpen/tFileExcelWorkbookOpen_java.xml sucessfully written.
 [INFO] Check message properties...
-[INFO] Read message properties file: /Volumes/Data/Talend/workspace_talend_comp/talendcomp_tFileExcel/talend_component/tFileExcelWorkbookOpen/tFileExcelWorkbookOpen_messages.properties
+[INFO]     Read message properties file: /Volumes/Data/Talend/workspace_talend_comp/talendcomp_tFileExcel/talend_component/tFileExcelWorkbookOpen/tFileExcelWorkbookOpen_messages.properties
 [INFO] Finished.
 ```
 
