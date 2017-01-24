@@ -14,7 +14,7 @@ If you have more than one component in your project, use multiple executions, th
 	<plugin>
 		<groupId>de.cimt.talendcomp</groupId>
 		<artifactId>cimt-talendcomp-maven-plugin</artifactId>
-		<version>1.4</version>
+		<version>1.6</version>
 		<configuration>
 			<componentName>tComponent1</componentName>
 			<componentBaseDir>${project.basedir}/talend_component</componentBaseDir>
@@ -61,7 +61,7 @@ If some components needs dedicated jars and other don't you can use the `jarExcl
 
 This is a typical maven log output:
 ```
-[INFO] --- cimt-talendcomp-maven-plugin:1.2:component (tFileExcelWorkbookOpen) @ cimt-talendcomp-excel ---
+[INFO] --- cimt-talendcomp-maven-plugin:1.6:component (tFileExcelWorkbookOpen) @ cimt-talendcomp-excel ---
 [INFO] ############ Setup component: tFileExcelWorkbookOpen with base dir: /Volumes/Data/Talend/workspace_talend_comp/talendcomp_tFileExcel/talend_component
 [INFO] Check dependencies and collect artifact jar files...
 [INFO]     file: /Volumes/Data/Talend/workspace_talend_comp/talendcomp_tFileExcel/target/cimt-talendcomp-excel-8.0.jar
@@ -114,10 +114,10 @@ Example:
 
 This plugin is not yet available via Maven Central. I am going to publish it there.
 For the moment you can download it here:
-http://jan-lolling.de/talend/cimt-talendcomp-maven-plugin-1.4.jar
+http://jan-lolling.de/talend/cimt-talendcomp-maven-plugin-1.6.jar
 
 and install it with this command (please setup your file path here according to your download location)
 ```
-mvn install:install-file -Dfile=Downloads/cimt-talendcomp-maven-plugin-1.4.jar -DgroupId=de.cimt.talendcomp \
-    -DartifactId=cimt-talendcomp-maven-plugin -Dversion=1.4 -Dpackaging=jar
+mvn install:install-file -Dfile=Downloads/cimt-talendcomp-maven-plugin-1.6.jar -DgroupId=de.cimt.talendcomp \
+    -DartifactId=cimt-talendcomp-maven-plugin -Dversion=1.6 -Dpackaging=jar
 ```
