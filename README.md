@@ -113,8 +113,8 @@ Example:
 ```
 
 This plugin is not yet available via Maven Central. I am going to publish it there.
-For the moment you can download it here:
-http://jan-lolling.de/talend/cimt-talendcomp-maven-plugin-1.6.jar
+For the moment you can download it in the release section of this repository.
+https://github.com/jlolling/talendcomp_maven_plugins/releases
 
 and install it with this command (please setup your file path here according to your download location)
 ```
