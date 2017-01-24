@@ -10,7 +10,7 @@ This plugin is bound to the phase `package` and performes for a talend component
 
 To use it in your own Talend component project use this plugin configuration. You can set configuration parameters in context of an execution of in for all executions.
 If you have more than one component in your project, use multiple executions, this example assumes 2 components. It is helpful to use the component name as id
-```
+```xml
 	<plugin>
 		<groupId>de.cimt.talendcomp</groupId>
 		<artifactId>cimt-talendcomp-maven-plugin</artifactId>
@@ -95,7 +95,7 @@ This is a typical maven log output:
 
 The result e.g. a list of the necessary modules within a Talend component XML configuration.
 Example:
-```
+```xml
   <CODEGENERATION> 
     <IMPORTS> 
       <IMPORT NAME="cimt-talendcomp-excel" MODULE="cimt-talendcomp-excel-8.0.jar" REQUIRED="true"/>
