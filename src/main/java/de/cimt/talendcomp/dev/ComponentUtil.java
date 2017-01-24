@@ -36,6 +36,7 @@ import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.dom4j.Attribute;
 import org.dom4j.Document;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
@@ -268,8 +269,20 @@ public class ComponentUtil {
 		if (advancedParams == null) {
 			throw new IllegalStateException("There is no ADVANCED_PARAMETERS tag. This is not a valid Talend component descriptor document!");
 		} else {
+			// remove old node
+			@SuppressWarnings("unchecked")
+			List<Element> releaseNodes = xmlDoc.selectNodes("/COMPONENT/ADVANCED_PARAMETERS/PARAMETER");
+			for (Element e : releaseNodes) {
+				Attribute attr = e.attribute("NAME");
+				if (attr != null) {
+					String name = attr.getText();
+					if (name != null && name.startsWith("RELEASE_LABEL")) {
+						e.detach();
+					}
+				}
+			}
 			releaseElement = advancedParams.addElement("PARAMETER")
-				.addAttribute("NAME", "RELEASE_LABEL")
+				.addAttribute("NAME", "RELEASE_LABEL_" + getReleaseDate())
 				.addAttribute("FIELD", "LABEL")
 				.addAttribute("COLOR", "0;0;0")
 				.addAttribute("NUM_ROW", "900");
