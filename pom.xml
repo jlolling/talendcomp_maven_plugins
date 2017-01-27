@@ -5,7 +5,7 @@
 	<artifactId>cimt-talendcomp-maven-plugin</artifactId>
 	<version>1.6</version>
 	<packaging>maven-plugin</packaging>
-	<name>cimt-talendcomp-maven-plugin</name>
+	<name>cimt-talendcomp-maven-plugin [${project.version}]</name>
 
 	<description>Maven plugin to support Talend component development</description>
 	<url>https://github.com/jlolling/talendcomp_maven_plugins</url>
