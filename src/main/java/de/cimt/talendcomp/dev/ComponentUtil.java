@@ -24,10 +24,6 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FilenameFilter;
 import java.io.InputStreamReader;
-import java.nio.file.FileSystems;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.StandardCopyOption;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -194,9 +190,11 @@ public class ComponentUtil {
 		int count = 0;
 		File dir = new File(componentBaseDir, componentName);
 		for (File jarFile : listJars) {
-			Path source = FileSystems.getDefault().getPath(jarFile.getParent(), jarFile.getName());
-			Path target = FileSystems.getDefault().getPath(dir.getAbsolutePath(), source.getFileName().toString());
-			Files.copy(source, target, StandardCopyOption.REPLACE_EXISTING);
+			if (jarFile.exists() == false) {
+				throw new Exception("");
+			}
+			File targetFile = new File(dir.getAbsolutePath(), jarFile.getName());
+			copyFile(jarFile, targetFile);
 			count++;
 		}
 		return count;
@@ -440,6 +438,9 @@ public class ComponentUtil {
 	private void copyFile(File source, File target) throws Exception {
 		if (source.exists() == false || source.canRead() == false) {
 			throw new Exception("Copy file: " + source.getAbsolutePath() + " failed: file doe not exist.");
+		}
+		if (target.equals(source)) {
+			throw new Exception("Copy source file: " + source.getAbsolutePath() + " to target file: " + target.getAbsolutePath() + " failed: Source and target are the same.");
 		}
 		BufferedOutputStream bo = new BufferedOutputStream(new FileOutputStream(target));
 		BufferedInputStream bi = new BufferedInputStream(new FileInputStream(source));

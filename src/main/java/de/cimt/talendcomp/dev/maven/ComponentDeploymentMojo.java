@@ -74,7 +74,7 @@ public class ComponentDeploymentMojo extends AbstractMojo {
 
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
-        if (componentName == null) { 
+        if (componentName == null) {
             throw new MojoFailureException("componentName is not set!");
         }
         if (componentBaseDir == null) { // TODO: not sure but null is not possible because of default, or? How about exists?
