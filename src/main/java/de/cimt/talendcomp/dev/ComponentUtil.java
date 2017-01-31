@@ -38,6 +38,7 @@ import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
 import org.dom4j.Node;
 import org.dom4j.io.OutputFormat;
+import org.dom4j.io.SAXReader;
 import org.dom4j.io.XMLWriter;
 
 public class ComponentUtil {
@@ -125,14 +126,16 @@ public class ComponentUtil {
 		if (xmlFile.exists() == false) {
 			throw new Exception("XML configuration file: " + xmlFile.getAbsolutePath() + " does not exist!");
 		}
-		BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(xmlFile), "UTF-8"));
-		String line = null;
-		StringBuilder sb = new StringBuilder();
-		while ((line = reader.readLine()) != null) {
-			sb.append(line);
-		}
-		reader.close();
-		xmlDoc = DocumentHelper.parseText(sb.toString());
+//		BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(xmlFile), "UTF-8"));
+//		String line = null;
+//		StringBuilder sb = new StringBuilder();
+//		while ((line = reader.readLine()) != null) {
+//			sb.append(line);
+//		}
+//		reader.close();
+//		xmlDoc = DocumentHelper.parseText(sb.toString());
+                SAXReader reader=new SAXReader();
+                xmlDoc = reader.read(xmlFile);
 		return xmlFile.getAbsolutePath();
 	}
 	
