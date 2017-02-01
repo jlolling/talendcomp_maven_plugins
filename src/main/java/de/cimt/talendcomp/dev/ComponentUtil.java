@@ -259,10 +259,6 @@ public class ComponentUtil {
 		if (componentVersion != null && componentVersion.trim().isEmpty() == false) {
 			headerNode.addAttribute("VERSION", componentVersion);
 		}
-		Element releaseElement = (Element) xmlDoc.selectSingleNode( "/COMPONENT/ADVANCED_PARAMETERS/PARAMETER[@NAME='RELEASE_LABEL']");
-		if (releaseElement != null) {
-			releaseElement.detach();
-		}
 		Element advancedParams = (Element) xmlDoc.selectSingleNode( "/COMPONENT/ADVANCED_PARAMETERS" );
 		if (advancedParams == null) {
 			throw new IllegalStateException("There is no ADVANCED_PARAMETERS tag. This is not a valid Talend component descriptor document!");
@@ -279,7 +275,7 @@ public class ComponentUtil {
 					}
 				}
 			}
-			releaseElement = advancedParams.addElement("PARAMETER")
+			Element releaseElement = advancedParams.addElement("PARAMETER")
 				.addAttribute("NAME", "RELEASE_LABEL_" + getReleaseDate())
 				.addAttribute("FIELD", "LABEL")
 				.addAttribute("COLOR", "0;0;0")
