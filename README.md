@@ -7,6 +7,7 @@ This plugin is bound to the phase `package` and performes for a talend component
 * Setup the release date tag of the component and adds in the advanced settings a label showing release date and version
 * Setup the component version according to the project version
 * Checks the message properties (only the default) if all necessary message keys are present
+* Checks the messages if the LONG_NAME property is present - needed to show a meaningful tool-tip for the component in the palette.
 
 To use it in your own Talend component project use this plugin configuration. You can set configuration parameters in context of an execution of in for all executions.
 If you have more than one component in your project, use multiple executions, this example assumes 2 components. It is helpful to use the component name as id
@@ -14,7 +15,7 @@ If you have more than one component in your project, use multiple executions, th
 	<plugin>
 		<groupId>de.cimt.talendcomp</groupId>
 		<artifactId>cimt-talendcomp-maven-plugin</artifactId>
-		<version>1.6</version>
+		<version>1.7</version>
 		<configuration>
 			<componentName>tComponent1</componentName>
 			<componentBaseDir>${project.basedir}/talend_component</componentBaseDir>
@@ -61,7 +62,7 @@ If some components needs dedicated jars and other don't you can use the `jarExcl
 
 This is a typical maven log output:
 ```
-[INFO] --- cimt-talendcomp-maven-plugin:1.6:component (tFileExcelWorkbookOpen) @ cimt-talendcomp-excel ---
+[INFO] --- cimt-talendcomp-maven-plugin:1.7:component (tFileExcelWorkbookOpen) @ cimt-talendcomp-excel ---
 [INFO] ############ Setup component: tFileExcelWorkbookOpen with base dir: /Volumes/Data/Talend/workspace_talend_comp/talendcomp_tFileExcel/talend_component
 [INFO] Check dependencies and collect artifact jar files...
 [INFO]     file: /Volumes/Data/Talend/workspace_talend_comp/talendcomp_tFileExcel/target/cimt-talendcomp-excel-8.0.jar
@@ -118,6 +119,6 @@ https://github.com/jlolling/talendcomp_maven_plugins/releases
 
 and install it with this command (please setup your file path here according to your download location)
 ```
-mvn install:install-file -Dfile=Downloads/cimt-talendcomp-maven-plugin-1.6.jar -DgroupId=de.cimt.talendcomp \
-    -DartifactId=cimt-talendcomp-maven-plugin -Dversion=1.6 -Dpackaging=jar
+mvn install:install-file -Dfile=Downloads/cimt-talendcomp-maven-plugin-1.7.jar -DgroupId=de.cimt.talendcomp \
+    -DartifactId=cimt-talendcomp-maven-plugin -Dversion=1.7 -Dpackaging=jar
 ```
