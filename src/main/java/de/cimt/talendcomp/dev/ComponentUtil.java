@@ -361,8 +361,8 @@ public class ComponentUtil {
 				listMissingMessageProperties.add(keyLink);
 			}
 		}
-		String longNameKey = "LONG_NAME.NAME";
-		if (messages.contains(longNameKey) == false) {
+		String longNameKey = "LONG_NAME";
+		if (messages.containsKey(longNameKey) == false) {
 			listMissingMessageProperties.add(longNameKey);
 		}
 		return fileName;
