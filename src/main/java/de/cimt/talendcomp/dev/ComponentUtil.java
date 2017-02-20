@@ -257,7 +257,13 @@ public class ComponentUtil {
 		Element headerNode = (Element) xmlDoc.selectSingleNode( "/COMPONENT/HEADER" );
 		headerNode.addAttribute("RELEASE_DATE", getReleaseDate());
 		if (componentVersion != null && componentVersion.trim().isEmpty() == false) {
-			headerNode.addAttribute("VERSION", componentVersion);
+			// prevent version prefixes like SNAPSHOT or RELEASE with a minus
+			int pos = componentVersion.indexOf("-");
+			if (pos > 1) {
+				headerNode.addAttribute("VERSION", componentVersion.substring(0, pos));
+			} else {
+				headerNode.addAttribute("VERSION", componentVersion);
+			}
 		}
 		Element advancedParams = (Element) xmlDoc.selectSingleNode( "/COMPONENT/ADVANCED_PARAMETERS" );
 		if (advancedParams == null) {
