@@ -29,7 +29,7 @@
 	<scm>
 		<connection>scm:git:git://github.com/jlolling/talendcomp_maven_plugins.git</connection>
 		<developerConnection>scm:git:ssh://github.com/jlolling/talendcomp_maven_plugins.git</developerConnection>
-		<url>http://github.com/jlolling/talendcomp_maven_plugins/tree/master</url>
+		<url>http://github.com/jlolling/talendcomp_maven_plugins.git</url>
 	</scm>
 
 	<repositories>
