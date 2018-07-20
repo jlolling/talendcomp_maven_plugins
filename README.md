@@ -1,4 +1,4 @@
-#Maven plugin to setup a Talend component
+# Maven plugin to setup a Talend component
 
 This plugin is bound to the phase `package` and performes for a talend component following tasks:
 * can copy the resources of an component from a source dir to a target dir before starting the processing
@@ -6,7 +6,7 @@ This plugin is bound to the phase `package` and performes for a talend component
 * Setup the IMPORT tags in the component XML configuration file
 * Setup the release date tag of the component and adds in the advanced settings a label showing release date and version
 * Setup the component version according to the project version
-* Checks the message properties (only the default) if all necessary message keys are present
+* Checks the message properties (only the default) if all necessary message keys exist.
 * Checks the messages if the LONG_NAME property is present - needed to show a meaningful tool-tip for the component in the palette.
 
 To use it in your own Talend component project use this plugin configuration. You can set configuration parameters in context of an execution of in for all executions.
