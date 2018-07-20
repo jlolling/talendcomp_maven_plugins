@@ -1,4 +1,4 @@
-#Maven plugin to setup a Talend component
+# Maven plugin to setup a Talend component
 
 This plugin is bound to the phase `package` and performes for a talend component following tasks:
 * can copy the resources of an component from a source dir to a target dir before starting the processing
