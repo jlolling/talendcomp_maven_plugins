@@ -114,4 +114,3 @@ Example:
 ```
 
 This plugin is available via Maven Central since 2018-07-20.
-```
