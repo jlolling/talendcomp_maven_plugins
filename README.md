@@ -113,12 +113,5 @@ Example:
   </CODEGENERATION>  
 ```
 
-This plugin is not yet available via Maven Central. I am going to publish it there.
-For the moment you can download it in the release section of this repository.
-https://github.com/jlolling/talendcomp_maven_plugins/releases
-
-and install it with this command (please setup your file path here according to your download location)
-```
-mvn install:install-file -Dfile=Downloads/cimt-talendcomp-maven-plugin-1.8.jar -DgroupId=de.cimt.talendcomp \
-    -DartifactId=cimt-talendcomp-maven-plugin -Dversion=1.8 -Dpackaging=jar
+This plugin is available via Maven Central since 2018-07-20.
 ```
