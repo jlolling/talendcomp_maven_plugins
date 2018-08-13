@@ -56,7 +56,7 @@ public class DeployTalendModul extends AbstractDeployMojo {
 			throw new MojoFailureException("Local repository is not set");
 		}
 		Artifact artifact = getTalendArtifact();
-		getLog().info("Install artifact as Talend module: " + artifact);
+		getLog().info("############ Install artifact as Talend module: " + artifact);
 		try {
 			File file = artifact.getFile();
 			if (file == null) {
