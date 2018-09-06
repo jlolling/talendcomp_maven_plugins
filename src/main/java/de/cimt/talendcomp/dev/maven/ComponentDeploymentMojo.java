@@ -57,6 +57,8 @@ public class ComponentDeploymentMojo extends AbstractMojo {
     private boolean noJars;
     @Parameter
     private String jarExcludePattern;
+    @Parameter(defaultValue = "false")
+    private boolean keepImports;
     private Pattern pattern = null;
 
     private boolean filterJarFile(String jarFileName) {
@@ -166,8 +168,8 @@ public class ComponentDeploymentMojo extends AbstractMojo {
         }
         getLog().info("Process component XML configuration...");
         try {
-            getLog().info("    setup imports...");
-            util.setupXMLImports();
+            getLog().info("    setup imports "+ (keepImports ? "keeping" : "removing") +"  existing values ...");
+            util.setupXMLImports( keepImports );
             if (addReleaseLabel) {
                 getLog().info("    setup release and version info...");
                 util.setupXMLReleaseLabel();

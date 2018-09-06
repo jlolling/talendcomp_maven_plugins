@@ -109,7 +109,7 @@ public class ComponentUtil {
 		readXmlConfiguration();
 		clearComponentJars();
 		copyJars();
-		setupXMLImports();
+		setupXMLImports(false);
 		writeXmlConfiguration();
 	}
 	
@@ -221,7 +221,7 @@ public class ComponentUtil {
 		return componentReleaseDate;
 	}
 	
-	public void setupXMLImports() throws Exception {
+	public void setupXMLImports(boolean keepExistingNodes) throws Exception {
 		Element importsNode = (Element) xmlDoc.selectSingleNode( "/COMPONENT/CODEGENERATION/IMPORTS" );
 		if (importsNode == null) {
 			// we must create an IMPORTS node
@@ -241,9 +241,11 @@ public class ComponentUtil {
 		// remove existing IMPORT tags
 		@SuppressWarnings("unchecked")
 		List<Node> importNodes = importsNode.selectNodes("/COMPONENT/CODEGENERATION/IMPORTS/IMPORT");
-		for (Node n : importNodes) {
-			n.detach();
-		}
+                if(!keepExistingNodes){
+                    for (Node n : importNodes) {
+                            n.detach();
+                    }
+                }
 		// add new jars as IMPORT tags
 		for (File jar : listJars) {
 			importsNode.addElement("IMPORT")
