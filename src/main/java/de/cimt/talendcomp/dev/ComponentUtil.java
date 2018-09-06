@@ -15,6 +15,8 @@
  */
 package de.cimt.talendcomp.dev;
 
+import de.cimt.talendcomp.dev.maven.CompDependency;
+import edu.emory.mathcs.backport.java.util.Collections;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
@@ -109,7 +111,7 @@ public class ComponentUtil {
 		readXmlConfiguration();
 		clearComponentJars();
 		copyJars();
-		setupXMLImports(false);
+		setupXMLImports(false, null);
 		writeXmlConfiguration();
 	}
 	
@@ -221,7 +223,7 @@ public class ComponentUtil {
 		return componentReleaseDate;
 	}
 	
-	public void setupXMLImports(boolean keepExistingNodes) throws Exception {
+	public void setupXMLImports(boolean keepExistingNodes, List<CompDependency> dependencies) throws Exception {
 		Element importsNode = (Element) xmlDoc.selectSingleNode( "/COMPONENT/CODEGENERATION/IMPORTS" );
 		if (importsNode == null) {
 			// we must create an IMPORTS node
@@ -246,6 +248,7 @@ public class ComponentUtil {
                             n.detach();
                     }
                 }
+                
 		// add new jars as IMPORT tags
 		for (File jar : listJars) {
 			importsNode.addElement("IMPORT")
@@ -253,6 +256,23 @@ public class ComponentUtil {
 				.addAttribute("MODULE", jar.getName())
 				.addAttribute("REQUIRED", "true");
 		}
+                
+                if(dependencies==null || dependencies.isEmpty())
+                    return;
+                
+                for(CompDependency dependency : dependencies){
+                    final Element elem = importsNode.addElement("IMPORT");
+                    elem.addAttribute("NAME", dependency.getArtifactId() + "_" + dependency.getVersion());
+                    elem.addAttribute("MODULE", dependency.getDestFileName());
+                    elem.addAttribute("MVN", "mvn:" + dependency.getGroupId() + "/" + dependency.getArtifactId()+ "/" + dependency.getVersion() );
+                    
+                    if(dependency.isRequired())
+			elem.addAttribute("REQUIRED", "true");
+                    
+                    String condition=dependency.getRequiredIf();
+                    if(condition!= null && !condition.trim().isEmpty()) 
+                        elem.addAttribute("REQUIRED_IF", condition);
+                }
 	}
 	
 	public void setupXMLReleaseLabel() {
