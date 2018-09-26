@@ -41,22 +41,30 @@ public class ComponentDeploymentMojo extends AbstractMojo {
 
     @Parameter
     private String componentName;
-    @Parameter(defaultValue = "${project.basedir}/talend_component")
+    @Parameter(defaultValue = "${project.basedir}/target/components/")
     private String componentBaseDir;
-    @Parameter
+    
+    @Parameter(defaultValue = "${project.basedir}/src/main/components/")
     private String copyFromSourceBaseDir;
+    
     @Parameter(defaultValue = "${project.version}")
     private String componentVersion;
+    
     @Parameter
     private String componentReleaseDate;
+    
     @Parameter(defaultValue = "${project}", readonly = true)
     private MavenProject project;
+    
     @Parameter(defaultValue = "true")
     private boolean addReleaseLabel;
+    
     @Parameter(defaultValue = "true")
     private boolean checkMessageProperties;
+    
     @Parameter(defaultValue = "false")
     private boolean noJars;
+    
     @Parameter
     private String jarExcludePattern;
 

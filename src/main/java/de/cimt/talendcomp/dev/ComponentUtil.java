@@ -16,7 +16,6 @@
 package de.cimt.talendcomp.dev;
 
 import de.cimt.talendcomp.dev.maven.CompDependency;
-import edu.emory.mathcs.backport.java.util.Collections;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
