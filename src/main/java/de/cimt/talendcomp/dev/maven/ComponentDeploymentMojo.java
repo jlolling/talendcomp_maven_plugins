@@ -32,6 +32,8 @@ import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.apache.maven.project.MavenProject;
 
 import de.cimt.talendcomp.dev.ComponentUtil;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 @Mojo(name = "component", requiresDependencyResolution = ResolutionScope.COMPILE, defaultPhase = LifecyclePhase.PACKAGE)
 @Execute(goal = "component", phase = LifecyclePhase.PACKAGE)
@@ -57,6 +59,23 @@ public class ComponentDeploymentMojo extends AbstractMojo {
     private boolean noJars;
     @Parameter
     private String jarExcludePattern;
+
+    @Parameter(defaultValue = "false")
+    private boolean keepImports;
+    
+    /**
+     * Comma seperated list of scopes to be expluded. Default to compile, test, system
+     */
+    @Parameter(defaultValue = "compile, test, system")
+    private String excludeScopes;
+    
+    /**
+     * Collection of Components Dependency needed at runtime. These elements will NOT be bundled with component
+     * but registered as dependency
+     */
+    @Parameter
+    private List<CompDependency> compDependencies;
+
     private Pattern pattern = null;
 
     private boolean filterJarFile(String jarFileName) {
@@ -109,8 +128,14 @@ public class ComponentDeploymentMojo extends AbstractMojo {
             }
             @SuppressWarnings("unchecked")
             Set<Artifact> artifacts = project.getArtifacts(); 
+            
+            List<String> excludeScopesList = new ArrayList<String>();
+            if(excludeScopes!=null && !excludeScopes.trim().isEmpty())
+                excludeScopesList.addAll( Arrays.<String>asList( excludeScopes.toLowerCase().split("\\s*,\\s*") ) );
+            
+            getLog().info("Collect project artifacts withot scope "+excludeScopesList);
             for (Artifact a : artifacts) {
-                if ("provided".equals(a.getScope()) == false && "test".equals(a.getScope()) == false) {
+                if ( !excludeScopesList.contains( a.getScope()) ) {
                     String path = a.getFile().getAbsolutePath();
                     if (filterJarFile(path)) {
                         try {
@@ -123,20 +148,21 @@ public class ComponentDeploymentMojo extends AbstractMojo {
                 }
             }
         }
+        
         if (copyFromSourceBaseDir != null && copyFromSourceBaseDir.trim().isEmpty() == false) {
-        	try {
-        		File sourceDir = new File(copyFromSourceBaseDir);
-        		if (sourceDir.isAbsolute() == false) {
-        			sourceDir = new File(project.getBasedir().getAbsolutePath(), copyFromSourceBaseDir);
-        		}
+            try {
+                File sourceDir = new File(copyFromSourceBaseDir);
+                if (sourceDir.isAbsolute() == false) {
+                    sourceDir = new File(project.getBasedir().getAbsolutePath(), copyFromSourceBaseDir);
+                }
                 getLog().info("Clean target and copy resources from source base dir: " + sourceDir.getAbsolutePath());
-        		util.setComponentSourceBaseDir(sourceDir.getAbsolutePath());
-        		int count = util.copyResources();
+                util.setComponentSourceBaseDir(sourceDir.getAbsolutePath());
+                int count = util.copyResources();
                 getLog().info("    " + count + " files copied.");
             } catch (Exception e) {
                 MojoFailureException me = new MojoFailureException("Copy resources from source failed: " + e.getMessage(), e);
                 throw me;
-			}
+            }
         }
         getLog().info("Read component XML configuration...");
         try {
@@ -166,8 +192,9 @@ public class ComponentDeploymentMojo extends AbstractMojo {
         }
         getLog().info("Process component XML configuration...");
         try {
-            getLog().info("    setup imports...");
-            util.setupXMLImports();
+            getLog().info("    setup imports "+ (keepImports ? "keeping" : "removing") +"  existing values ...");
+            util.setupXMLImports( keepImports, compDependencies  );
+            
             if (addReleaseLabel) {
                 getLog().info("    setup release and version info...");
                 util.setupXMLReleaseLabel();
