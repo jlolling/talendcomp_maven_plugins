@@ -74,7 +74,7 @@ public class ComponentDeploymentMojo extends AbstractMojo {
     /**
      * Comma seperated list of scopes to be expluded. Default to compile, test, system
      */
-    @Parameter(defaultValue = "compile, test, system")
+    @Parameter(defaultValue = "compile, test, system, provided")
     private String excludeScopes;
     
     /**
@@ -141,7 +141,7 @@ public class ComponentDeploymentMojo extends AbstractMojo {
             if(excludeScopes!=null && !excludeScopes.trim().isEmpty())
                 excludeScopesList.addAll( Arrays.<String>asList( excludeScopes.toLowerCase().split("\\s*,\\s*") ) );
             
-            getLog().info("Collect project artifacts withot scope "+excludeScopesList);
+            getLog().info("Collect project artifacts without scopes: "+excludeScopesList);
             for (Artifact a : artifacts) {
                 if ( !excludeScopesList.contains( a.getScope()) ) {
                     String path = a.getFile().getAbsolutePath();
