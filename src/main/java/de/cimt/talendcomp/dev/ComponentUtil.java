@@ -15,7 +15,6 @@
  */
 package de.cimt.talendcomp.dev;
 
-import de.cimt.talendcomp.dev.maven.CompDependency;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
@@ -41,8 +40,10 @@ import org.dom4j.Node;
 import org.dom4j.io.OutputFormat;
 import org.dom4j.io.XMLWriter;
 
+import de.cimt.talendcomp.dev.maven.CompDependency;
+
 public class ComponentUtil {
-	
+
 	private String componentName = null;
 	private String componentBaseDir = null;
 	private String componentSourceBaseDir = null;
@@ -57,7 +58,7 @@ public class ComponentUtil {
 	private List<String> listMissingMessageProperties = new ArrayList<String>();
 	private static final String ignoreFilePatternStr = ".svn|.git|.DS_Store|.class";
 	private Pattern ignoreFilePattern = null;
-	
+
 	public void addJarFile(String jarFilePath) throws Exception {
 		File jar = new File(jarFilePath);
 		if (jar.exists() == false) {
@@ -69,51 +70,43 @@ public class ComponentUtil {
 	public String getComponentName() {
 		return componentName;
 	}
-	
+
 	public void setComponentName(String componentName) {
 		this.componentName = componentName;
 	}
-	
+
 	public String getComponentBaseDir() {
 		return componentBaseDir;
 	}
-	
+
 	public void setComponentBaseDir(String componentBaseDir) {
 		this.componentBaseDir = componentBaseDir;
 	}
-	
+
 	public String getComponentVersion() {
 		return componentVersion;
 	}
-	
+
 	public void setComponentVersion(String componentVersion) {
 		this.componentVersion = componentVersion;
 	}
-	
+
 	public String getComponentReleaseDate() {
 		return componentReleaseDate;
 	}
-	
+
 	public void setComponentReleaseDate(String componentReleaseDate) {
 		this.componentReleaseDate = componentReleaseDate;
 	}
-	
+
 	public boolean isAddReleaseInfoAsLabel() {
 		return addReleaseInfoAsLabel;
 	}
-	
+
 	public void setAddReleaseInfoAsLabel(boolean addReleaseInfoAsLabel) {
 		this.addReleaseInfoAsLabel = addReleaseInfoAsLabel;
 	}
-	
-	public void execute() throws Exception {
-		readXmlConfiguration();
-		clearComponentJars();
-		copyJars();
-		setupXMLImports(false, null);
-		writeXmlConfiguration();
-	}
-	
+
 	public String readXmlConfiguration() throws Exception {
 		if (componentBaseDir == null) {
 			throw new IllegalStateException("componentBaseDir not set!");
@@ -136,7 +129,7 @@ public class ComponentUtil {
 		xmlDoc = DocumentHelper.parseText(sb.toString());
 		return xmlFile.getAbsolutePath();
 	}
-	
+
 	public String writeXmlConfiguration() throws Exception {
 		if (componentBaseDir == null) {
 			throw new IllegalStateException("componentBaseDir not set!");
@@ -147,15 +140,16 @@ public class ComponentUtil {
 		File dir = new File(componentBaseDir, componentName);
 		File xmlFile = new File(dir, componentName + "_java.xml");
 		if (xmlFile.exists() == false) {
-			throw new Exception("XML configuration file: " + xmlFile.getAbsolutePath() + " does not exist, but is mandatory for a Talend component!");
+			throw new Exception("XML configuration file: " + xmlFile.getAbsolutePath()
+					+ " does not exist, but is mandatory for a Talend component!");
 		}
 		OutputFormat format = OutputFormat.createPrettyPrint();
-		XMLWriter writer = new XMLWriter(new FileOutputStream(xmlFile), format );
-        writer.write( xmlDoc );
-        writer.close();
+		XMLWriter writer = new XMLWriter(new FileOutputStream(xmlFile), format);
+		writer.write(xmlDoc);
+		writer.close();
 		return xmlFile.getAbsolutePath();
 	}
-	
+
 	public int clearComponentJars() {
 		if (componentBaseDir == null) {
 			throw new IllegalStateException("componentBaseDir not set!");
@@ -165,12 +159,12 @@ public class ComponentUtil {
 		}
 		File dir = new File(componentBaseDir, componentName);
 		File[] files = dir.listFiles(new FilenameFilter() {
-			
+
 			@Override
 			public boolean accept(File dir, String name) {
 				return name != null && name.toLowerCase().endsWith(".jar");
 			}
-			
+
 		});
 		int count = 0;
 		for (File jarFile : files) {
@@ -180,7 +174,7 @@ public class ComponentUtil {
 		}
 		return count;
 	}
-	
+
 	public int copyJars() throws Exception {
 		if (componentBaseDir == null) {
 			throw new IllegalStateException("componentBaseDir not set!");
@@ -200,7 +194,7 @@ public class ComponentUtil {
 		}
 		return count;
 	}
-	
+
 	private String getJarCommonName(String fileName) {
 		int pos = fileName.lastIndexOf("-");
 		if (pos > 0) {
@@ -214,23 +208,24 @@ public class ComponentUtil {
 			return fileName;
 		}
 	}
-	
+
 	private String getReleaseDate() {
 		if (componentReleaseDate == null) {
 			componentReleaseDate = sdf.format(new Date());
 		}
 		return componentReleaseDate;
 	}
-	
+
 	public void setupXMLImports(boolean keepExistingNodes, List<CompDependency> dependencies) throws Exception {
-		Element importsNode = (Element) xmlDoc.selectSingleNode( "/COMPONENT/CODEGENERATION/IMPORTS" );
+		Element importsNode = (Element) xmlDoc.selectSingleNode("/COMPONENT/CODEGENERATION/IMPORTS");
 		if (importsNode == null) {
 			// we must create an IMPORTS node
-			Element codeGenNode = (Element) xmlDoc.selectSingleNode( "/COMPONENT/CODEGENERATION" );
+			Element codeGenNode = (Element) xmlDoc.selectSingleNode("/COMPONENT/CODEGENERATION");
 			if (codeGenNode == null) {
-				Element compNode = (Element) xmlDoc.selectSingleNode( "/COMPONENT" );
+				Element compNode = (Element) xmlDoc.selectSingleNode("/COMPONENT");
 				if (compNode == null) {
-					throw new IllegalStateException("There is no COMPONENT tag. This is not a valid Talend component descriptor document!");
+					throw new IllegalStateException(
+							"There is no COMPONENT tag. This is not a valid Talend component descriptor document!");
 				} else {
 					codeGenNode = compNode.addElement("CODEGENERATION");
 					importsNode = codeGenNode.addElement("IMPORTS");
@@ -242,40 +237,46 @@ public class ComponentUtil {
 		// remove existing IMPORT tags
 		@SuppressWarnings("unchecked")
 		List<Node> importNodes = importsNode.selectNodes("/COMPONENT/CODEGENERATION/IMPORTS/IMPORT");
-                if(!keepExistingNodes){
-                    for (Node n : importNodes) {
-                            n.detach();
-                    }
-                }
-                
+		if (!keepExistingNodes) {
+			for (Node n : importNodes) {
+				n.detach();
+			}
+		}
+
 		// add new jars as IMPORT tags
 		for (File jar : listJars) {
 			importsNode.addElement("IMPORT")
-				.addAttribute("NAME", getJarCommonName(jar.getName()))
-				.addAttribute("MODULE", jar.getName())
-				.addAttribute("REQUIRED", "true");
+					.addAttribute("NAME", getJarCommonName(jar.getName()))
+					.addAttribute("MODULE", jar.getName())
+					.addAttribute("REQUIRED", "true");
 		}
-                
-                if(dependencies==null || dependencies.isEmpty())
-                    return;
-                
-                for(CompDependency dependency : dependencies){
-                    final Element elem = importsNode.addElement("IMPORT");
-                    elem.addAttribute("NAME", dependency.getArtifactId() + "_" + dependency.getVersion());
-                    elem.addAttribute("MODULE", dependency.getDestFileName());
-                    elem.addAttribute("MVN", "mvn:" + dependency.getGroupId() + "/" + dependency.getArtifactId()+ "/" + dependency.getVersion() );
-                    
-                    if(dependency.isRequired())
-			elem.addAttribute("REQUIRED", "true");
-                    
-                    String condition=dependency.getRequiredIf();
-                    if(condition!= null && !condition.trim().isEmpty()) 
-                        elem.addAttribute("REQUIRED_IF", condition);
-                }
+
+		if (dependencies == null || dependencies.isEmpty())
+			return;
+
+		for (CompDependency dependency : dependencies) {
+			final Element elem = importsNode.addElement("IMPORT");
+			elem.addAttribute("NAME", dependency.getArtifactId() + "_" + dependency.getVersion());
+			elem.addAttribute("MODULE", dependency.getDestFileName());
+			elem.addAttribute("MVN", "mvn:" + 
+					dependency.getGroupId() + 
+					"/" + 
+					dependency.getArtifactId() + 
+					"/" +
+					dependency.getVersion());
+
+			if (dependency.isRequired()) {
+				elem.addAttribute("REQUIRED", "true");
+			}
+			String condition = dependency.getRequiredIf();
+			if (condition != null && !condition.trim().isEmpty()) {
+				elem.addAttribute("REQUIRED_IF", condition);
+			}
+		}
 	}
-	
+
 	public void setupXMLReleaseLabel() {
-		Element headerNode = (Element) xmlDoc.selectSingleNode( "/COMPONENT/HEADER" );
+		Element headerNode = (Element) xmlDoc.selectSingleNode("/COMPONENT/HEADER");
 		headerNode.addAttribute("RELEASE_DATE", getReleaseDate());
 		if (componentVersion != null && componentVersion.trim().isEmpty() == false) {
 			// prevent version prefixes like SNAPSHOT or RELEASE with a minus
@@ -286,9 +287,10 @@ public class ComponentUtil {
 				headerNode.addAttribute("VERSION", componentVersion);
 			}
 		}
-		Element advancedParams = (Element) xmlDoc.selectSingleNode( "/COMPONENT/ADVANCED_PARAMETERS" );
+		Element advancedParams = (Element) xmlDoc.selectSingleNode("/COMPONENT/ADVANCED_PARAMETERS");
 		if (advancedParams == null) {
-			throw new IllegalStateException("There is no ADVANCED_PARAMETERS tag. This is not a valid Talend component descriptor document!");
+			throw new IllegalStateException(
+					"There is no ADVANCED_PARAMETERS tag. This is not a valid Talend component descriptor document!");
 		} else {
 			// remove old node
 			@SuppressWarnings("unchecked")
@@ -303,11 +305,11 @@ public class ComponentUtil {
 				}
 			}
 			Element releaseElement = advancedParams.addElement("PARAMETER")
-				.addAttribute("NAME", "RELEASE_LABEL_" + getReleaseDate())
-				.addAttribute("FIELD", "LABEL")
-				.addAttribute("COLOR", "0;0;0")
-				.addAttribute("NUM_ROW", "900");
-			releaseElement.addElement("DEFAULT").addText("Release: " + componentVersion + " build at: " + getReleaseDate());
+					.addAttribute("NAME", "RELEASE_LABEL_" + getReleaseDate()).addAttribute("FIELD", "LABEL")
+					.addAttribute("COLOR", "0;0;0")
+					.addAttribute("NUM_ROW", "900");
+			releaseElement.addElement("DEFAULT")
+					.addText("Release: " + componentVersion + " build at: " + getReleaseDate());
 		}
 	}
 
@@ -321,7 +323,8 @@ public class ComponentUtil {
 		File dir = new File(componentBaseDir, componentName);
 		messagePropertiesFile = new File(dir, componentName + "_messages.properties");
 		if (messagePropertiesFile.exists() == false) {
-			throw new Exception("Message properties file: " + messagePropertiesFile.getAbsolutePath() + " does not exist, but is mandatory for a Talend component!");
+			throw new Exception("Message properties file: " + messagePropertiesFile.getAbsolutePath()
+					+ " does not exist, but is mandatory for a Talend component!");
 		}
 		FileInputStream in = new FileInputStream(messagePropertiesFile);
 		messages.load(in);
@@ -329,6 +332,12 @@ public class ComponentUtil {
 		return messagePropertiesFile.getAbsolutePath();
 	}
 	
+	private void addMissingMessageProperty(String key) {
+		if (listMissingMessageProperties.contains(key) == false) {
+			listMissingMessageProperties.add(key);
+		}
+	}
+
 	@SuppressWarnings("unchecked")
 	public String checkMissingMessageProperties() throws Exception {
 		String fileName = readDefaultMessageProperties();
@@ -340,7 +349,7 @@ public class ComponentUtil {
 			if ("PROPERTY".equals(name) == false) {
 				String key = name + ".NAME";
 				if (messages.containsKey(key) == false) {
-					listMissingMessageProperties.add(key);
+					addMissingMessageProperty(key);
 				}
 			}
 		}
@@ -353,16 +362,28 @@ public class ComponentUtil {
 				String itemNodeName1 = itemNode1.getStringValue().trim();
 				String key1 = name + ".ITEM." + itemNodeName1;
 				if (messages.containsKey(key1) == false) {
-					listMissingMessageProperties.add(key1);
+					addMissingMessageProperty(key1);
 				}
 				// check list in items
-				List<Node> itemNodes2 = xmlDoc.selectNodes("/COMPONENT/*/PARAMETER[@NAME='" + name + "']/ITEMS/ITEM[@NAME='" + itemNodeName1 + "']/ITEMS/ITEM/@NAME");
+				List<Node> itemNodes2 = xmlDoc.selectNodes("/COMPONENT/*/PARAMETER[@NAME='" + name
+						+ "']/ITEMS/ITEM[@NAME='" + itemNodeName1 + "']/ITEMS/ITEM/@NAME");
 				for (Node itemNode2 : itemNodes2) {
 					String itemNodeName2 = itemNode2.getStringValue().trim();
 					String key2 = key1 + ".ITEM." + itemNodeName2;
 					if (messages.containsKey(key2) == false) {
-						listMissingMessageProperties.add(key2);
+						addMissingMessageProperty(key2);
 					}
+				}
+			}
+		}
+		// read group names
+		List<Node> paramGroupNodes = xmlDoc.selectNodes("/COMPONENT/*/PARAMETER/@GROUP");
+		for (Node node : paramGroupNodes) {
+			String name = node.getStringValue().trim();
+			if ("PROPERTY".equals(name) == false) {
+				String key = name + ".NAME";
+				if (messages.containsKey(key) == false) {
+					addMissingMessageProperty(key);
 				}
 			}
 		}
@@ -372,7 +393,7 @@ public class ComponentUtil {
 			String name = node.getStringValue().trim();
 			String key = name + ".NAME";
 			if (messages.containsKey(key) == false) {
-				listMissingMessageProperties.add(key);
+				addMissingMessageProperty(key);
 			}
 		}
 		// read connector names
@@ -381,16 +402,16 @@ public class ComponentUtil {
 			String name = node.getStringValue().trim();
 			String keyMenu = name + ".MENU";
 			if (messages.containsKey(keyMenu) == false) {
-				listMissingMessageProperties.add(keyMenu);
+				addMissingMessageProperty(keyMenu);
 			}
 			String keyLink = name + ".LINK";
 			if (messages.containsKey(keyLink) == false) {
-				listMissingMessageProperties.add(keyLink);
+				addMissingMessageProperty(keyLink);
 			}
 		}
 		String longNameKey = "LONG_NAME";
 		if (messages.containsKey(longNameKey) == false) {
-			listMissingMessageProperties.add(longNameKey);
+			addMissingMessageProperty(longNameKey);
 		}
 		return fileName;
 	}
@@ -406,7 +427,7 @@ public class ComponentUtil {
 	public void setComponentSourceBaseDir(String componentSourceBaseDir) {
 		this.componentSourceBaseDir = componentSourceBaseDir;
 	}
-	
+
 	public int copyResources() throws Exception {
 		if (componentName == null) {
 			throw new Exception("componentName not set!");
@@ -416,7 +437,8 @@ public class ComponentUtil {
 		}
 		File sourceDir = new File(componentSourceBaseDir, componentName);
 		if (sourceDir.exists() == false) {
-			throw new Exception("copyResources failed: sourceDir: " + sourceDir.getAbsolutePath() + " does not exists or is not readable!");
+			throw new Exception("copyResources failed: sourceDir: " + sourceDir.getAbsolutePath()
+					+ " does not exists or is not readable!");
 		}
 		if (componentBaseDir == null || componentBaseDir.trim().isEmpty()) {
 			throw new Exception("copyResources failed: componentBaseDir is not set!");
@@ -428,11 +450,12 @@ public class ComponentUtil {
 			cleanTarget(targetDir);
 		}
 		if (targetDir.exists() == false) {
-			throw new Exception("copyResources failed: componentBaseDir: " + targetDir.getAbsolutePath() + " does not exist and cannot be created!");
+			throw new Exception("copyResources failed: componentBaseDir: " + targetDir.getAbsolutePath()
+					+ " does not exist and cannot be created!");
 		}
 		// select resources
 		File[] sourceFiles = sourceDir.listFiles(new FileFilter() {
-			
+
 			@Override
 			public boolean accept(File pathname) {
 				Matcher m = getIgnoreFilePattern().matcher(pathname.getAbsolutePath());
@@ -452,7 +475,7 @@ public class ComponentUtil {
 		}
 		return count;
 	}
-	
+
 	private void cleanTarget(File targetDir) {
 		if (targetDir.exists()) {
 			File[] files = targetDir.listFiles();
@@ -461,13 +484,14 @@ public class ComponentUtil {
 			}
 		}
 	}
-	
+
 	private void copyFile(File source, File target) throws Exception {
 		if (source.exists() == false || source.canRead() == false) {
 			throw new Exception("Copy file: " + source.getAbsolutePath() + " failed: file doe not exist.");
 		}
 		if (target.equals(source)) {
-			throw new Exception("Copy source file: " + source.getAbsolutePath() + " to target file: " + target.getAbsolutePath() + " failed: Source and target are the same.");
+			throw new Exception("Copy source file: " + source.getAbsolutePath() + " to target file: "
+					+ target.getAbsolutePath() + " failed: Source and target are the same.");
 		}
 		BufferedOutputStream bo = new BufferedOutputStream(new FileOutputStream(target));
 		BufferedInputStream bi = new BufferedInputStream(new FileInputStream(source));
@@ -500,5 +524,5 @@ public class ComponentUtil {
 		}
 		return ignoreFilePattern;
 	}
-	
+
 }

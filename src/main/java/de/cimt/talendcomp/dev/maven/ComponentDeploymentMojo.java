@@ -16,6 +16,8 @@
 package de.cimt.talendcomp.dev.maven;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 import java.util.regex.Pattern;
@@ -32,8 +34,6 @@ import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.apache.maven.project.MavenProject;
 
 import de.cimt.talendcomp.dev.ComponentUtil;
-import java.util.ArrayList;
-import java.util.Arrays;
 
 @Mojo(name = "component", requiresDependencyResolution = ResolutionScope.COMPILE, defaultPhase = LifecyclePhase.PACKAGE)
 @Execute(goal = "component", phase = LifecyclePhase.PACKAGE)
@@ -138,9 +138,9 @@ public class ComponentDeploymentMojo extends AbstractMojo {
             Set<Artifact> artifacts = project.getArtifacts(); 
             
             List<String> excludeScopesList = new ArrayList<String>();
-            if(excludeScopes!=null && !excludeScopes.trim().isEmpty())
+            if(excludeScopes!=null && !excludeScopes.trim().isEmpty()) {
                 excludeScopesList.addAll( Arrays.<String>asList( excludeScopes.toLowerCase().split("\\s*,\\s*") ) );
-            
+            }
             getLog().info("Collect project artifacts withot scope "+excludeScopesList);
             for (Artifact a : artifacts) {
                 if ( !excludeScopesList.contains( a.getScope()) ) {

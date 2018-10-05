@@ -16,6 +16,7 @@
 package de.cimt.talendcomp.dev.maven;
 
 import java.io.File;
+
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.ArtifactUtils;
 import org.codehaus.plexus.util.StringUtils;
@@ -76,15 +77,6 @@ public class CompDependency   {
      * @parameter
      */
     private String destFileName;
-
-    /**
-     * Encoding of artifact. Overrides default encoding.
-     *
-     * @parameter
-     */
-    private String encoding;
-
-
 
     /**
      * A comma separated list of file patterns to include when unpacking the artifact.
