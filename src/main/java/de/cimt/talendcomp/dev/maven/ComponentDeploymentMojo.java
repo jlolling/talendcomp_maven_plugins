@@ -72,9 +72,9 @@ public class ComponentDeploymentMojo extends AbstractMojo {
     private boolean keepImports;
     
     /**
-     * Comma seperated list of scopes to be expluded. Default to compile, test, system
+     * Comma separated list of scopes to be excluded. Default to test, provided
      */
-    @Parameter(defaultValue = "compile, test, system")
+    @Parameter(defaultValue = "test, provided")
     private String excludeScopes;
     
     /**
@@ -141,18 +141,21 @@ public class ComponentDeploymentMojo extends AbstractMojo {
             if(excludeScopes!=null && !excludeScopes.trim().isEmpty()) {
                 excludeScopesList.addAll( Arrays.<String>asList( excludeScopes.toLowerCase().split("\\s*,\\s*") ) );
             }
-            getLog().info("Collect project artifacts withot scope "+excludeScopesList);
+            getLog().info("Collect project artifacts without scope " + excludeScopesList);
             for (Artifact a : artifacts) {
+            	getLog().info("    Check artifact: " + a.getGroupId() + "/" + a.getArtifactId() + ":" + a.getVersion() + " scope: " + a.getScope());
                 if ( !excludeScopesList.contains( a.getScope()) ) {
                     String path = a.getFile().getAbsolutePath();
                     if (filterJarFile(path)) {
                         try {
                             util.addJarFile(path);
-                            getLog().info("    file: " + path);
+                            getLog().info("      Add file: " + path);
                         } catch (Exception e) {
                             throw new MojoExecutionException("Artifact: " + a + ": failed get jar file: " + path);
                         }
                     }
+                } else {
+                	getLog().info("      Rejected.");
                 }
             }
         }
