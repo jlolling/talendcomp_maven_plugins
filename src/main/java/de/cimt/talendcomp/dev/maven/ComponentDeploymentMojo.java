@@ -16,6 +16,8 @@
 package de.cimt.talendcomp.dev.maven;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 import java.util.regex.Pattern;
@@ -32,8 +34,6 @@ import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.apache.maven.project.MavenProject;
 
 import de.cimt.talendcomp.dev.ComponentUtil;
-import java.util.ArrayList;
-import java.util.Arrays;
 
 @Mojo(name = "component", requiresDependencyResolution = ResolutionScope.COMPILE, defaultPhase = LifecyclePhase.PACKAGE)
 @Execute(goal = "component", phase = LifecyclePhase.PACKAGE)
@@ -72,9 +72,9 @@ public class ComponentDeploymentMojo extends AbstractMojo {
     private boolean keepImports;
     
     /**
-     * Comma seperated list of scopes to be expluded. Default to compile, test, system
+     * Comma separated list of scopes to be excluded. Default to test, provided
      */
-    @Parameter(defaultValue = "compile, test, system, provided")
+    @Parameter(defaultValue = "test, compile, system, provided")
     private String excludeScopes;
     
     /**
@@ -138,21 +138,24 @@ public class ComponentDeploymentMojo extends AbstractMojo {
             Set<Artifact> artifacts = project.getArtifacts(); 
             
             List<String> excludeScopesList = new ArrayList<String>();
-            if(excludeScopes!=null && !excludeScopes.trim().isEmpty())
+            if(excludeScopes!=null && !excludeScopes.trim().isEmpty()) {
                 excludeScopesList.addAll( Arrays.<String>asList( excludeScopes.toLowerCase().split("\\s*,\\s*") ) );
-            
-            getLog().info("Collect project artifacts without scopes: "+excludeScopesList);
+            }
+            getLog().info("Collect project artifacts without scope " + excludeScopesList);
             for (Artifact a : artifacts) {
+            	getLog().info("    Check artifact: " + a.getGroupId() + "/" + a.getArtifactId() + ":" + a.getVersion() + " scope: " + a.getScope());
                 if ( !excludeScopesList.contains( a.getScope()) ) {
                     String path = a.getFile().getAbsolutePath();
                     if (filterJarFile(path)) {
                         try {
                             util.addJarFile(path);
-                            getLog().info("    file: " + path);
+                            getLog().info("      Add file: " + path);
                         } catch (Exception e) {
                             throw new MojoExecutionException("Artifact: " + a + ": failed get jar file: " + path);
                         }
                     }
+                } else {
+                	getLog().info("      Rejected.");
                 }
             }
         }

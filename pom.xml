@@ -8,7 +8,7 @@
 	<packaging>maven-plugin</packaging>
 	<name>cimt-talendcomp-maven-plugin [${project.version}]</name>
 
-	<description>Maven plugin to support Talend component development</description>
+	<description>Maven plugin to support JET based Talend component development</description>
 	<url>https://github.com/jlolling/talendcomp_maven_plugins</url>
 
 	<licenses>
@@ -18,19 +18,19 @@
 		</license>
 	</licenses>
 
-        <developers>
-            <developer>
-                <name>Jan Lolling</name>
-                <email>jan.lolling@gmail.com</email>
-                <organization>cimt AG</organization>
-                <organizationUrl>http://www.cimt-ag.de</organizationUrl>
-            </developer>
-            <developer>
-                <name>Daniel Koch</name>
-                <email>Daniel.Koch@cimt-ag.de</email>
-                <organization>cimt AG</organization>
-                <organizationUrl>http://www.cimt-ag.de</organizationUrl>
-            </developer>	
+	<developers>
+		<developer>
+			<name>Jan Lolling</name>
+			<email>jan.lolling@gmail.com</email>
+			<organization>GVL</organization>
+			<organizationUrl>https://gvl.de</organizationUrl>
+		</developer>
+		<developer>
+			<name>Daniel Koch</name>
+			<email>Daniel.Koch@cimt-ag.de</email>
+			<organization>cimt AG</organization>
+			<organizationUrl>https://www.cimt-ag.de</organizationUrl>
+		</developer>
 	</developers>
 
 	<scm>
@@ -46,6 +46,7 @@
 	<build>
 		<plugins>
 			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
 				<version>3.5.1</version>
 				<configuration>
@@ -56,6 +57,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-jar-plugin</artifactId>
+				<version>2.4</version>
 				<executions>
 					<execution>
 						<phase>package</phase>
@@ -170,7 +172,7 @@
 			<version>1.6.1</version>
 		</dependency>
 	</dependencies>
-	
+
 	<distributionManagement>
 		<repository>
 			<id>ossrh</id>
