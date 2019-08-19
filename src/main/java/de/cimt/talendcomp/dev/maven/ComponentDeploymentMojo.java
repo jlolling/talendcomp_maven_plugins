@@ -124,13 +124,21 @@ public class ComponentDeploymentMojo extends AbstractMojo {
             }
             Artifact mainArtifact = project.getArtifact();
             if (mainArtifact != null) {
-                String path = mainArtifact.getFile().getAbsolutePath();
-                if (filterJarFile(path)) {
-                    try {
-                        util.addJarFile(path);
-                        getLog().info("    file: " + path);
-                    } catch (Exception e) {
-                        throw new MojoExecutionException("Main artifact: " + mainArtifact + ": failed get jar file: " + mainArtifact.getFile().getAbsolutePath());
+                try {
+                    String path = mainArtifact.getFile().getAbsolutePath();
+                    if (filterJarFile(path)) {
+                        try {
+                            util.addJarFile(path);
+                            getLog().info("    file: " + path);
+                        } catch (Exception e) {
+                            throw new MojoExecutionException("Main artifact: " + mainArtifact + ": failed get jar file: " + mainArtifact.getFile().getAbsolutePath());
+                        }
+                    }
+                } catch (java.lang.NullPointerException npe) {
+                    if (!project.getPackaging().equalsIgnoreCase("jar")) {
+                        getLog().warn("No local jar is created!");
+                    } else {
+                        throw new MojoExecutionException("failed to create jar file.");
                     }
                 }
             }
