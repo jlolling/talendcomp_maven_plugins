@@ -50,12 +50,12 @@ public class ComponentUtil {
 	private String componentReleaseDate = null;
 	private boolean addReleaseInfoAsLabel = true;
 	private Document xmlDoc = null;
-	private List<File> listJars = new ArrayList<File>();
-	private SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+	private final List<File> listJars = new ArrayList<File>();
+	private final SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
 	private File messagePropertiesFile = null;
-	private Properties messages = new Properties();
-	private List<String> listMissingMessageProperties = new ArrayList<String>();
-	private static final String ignoreFilePatternStr = ".svn|.git|.DS_Store|.class";
+	private final Properties messages = new Properties();
+	private final List<String> listMissingMessageProperties = new ArrayList<String>();
+	private static final String IGNOREFILEPATTERN = ".+\\.(svn|git|DS_Store|class|project|classpath)$";
 	private Pattern ignoreFilePattern = null;
 	
 	public void addJarFile(String jarFilePath) throws Exception {
@@ -151,8 +151,8 @@ public class ComponentUtil {
 		}
 		OutputFormat format = OutputFormat.createPrettyPrint();
 		XMLWriter writer = new XMLWriter(new FileOutputStream(xmlFile), format );
-        writer.write( xmlDoc );
-        writer.close();
+                writer.write( xmlDoc );
+                writer.close();
 		return xmlFile.getAbsolutePath();
 	}
 	
@@ -192,7 +192,7 @@ public class ComponentUtil {
 		File dir = new File(componentBaseDir, componentName);
 		for (File jarFile : listJars) {
 			if (jarFile.exists() == false) {
-				throw new Exception("");
+				throw new Exception("missing Jar file:"+jarFile );
 			}
 			File targetFile = new File(dir.getAbsolutePath(), jarFile.getName());
 			copyFile(jarFile, targetFile);
@@ -497,7 +497,7 @@ public class ComponentUtil {
 
 	private Pattern getIgnoreFilePattern() {
 		if (ignoreFilePattern == null) {
-			ignoreFilePattern = Pattern.compile(ignoreFilePatternStr);
+			ignoreFilePattern = Pattern.compile(IGNOREFILEPATTERN);
 		}
 		return ignoreFilePattern;
 	}
