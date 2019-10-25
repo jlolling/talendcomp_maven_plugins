@@ -71,7 +71,13 @@ public class ComponentDeploymentMojo extends AbstractMojo {
     @Parameter(defaultValue = "false")
     private boolean keepImports;
     
-    /**
+    @Parameter(defaultValue = "org.talend.libraries")
+	private String talendLibrariesGroupId;
+    
+    @Parameter(defaultValue = "6.0.0-SNAPSHOT")
+	private String talendLibrariesVersion;
+
+	/**
      * Comma separated list of scopes to be excluded. Default to test, provided
      */
     @Parameter(defaultValue = "test, provided")
@@ -117,6 +123,8 @@ public class ComponentDeploymentMojo extends AbstractMojo {
         util.setComponentName(componentName);
         util.setComponentVersion(componentVersion);
         util.setComponentReleaseDate(componentReleaseDate);
+        util.setTalendLibrariesGroupId(talendLibrariesGroupId);
+        util.setTalendLibrariesVersion(talendLibrariesVersion);
         if (noJars == false) {
             getLog().info("Check dependencies and collect artifact jar files...");
             if (jarExcludePattern != null && jarExcludePattern.trim().isEmpty() == false) {
@@ -166,10 +174,14 @@ public class ComponentDeploymentMojo extends AbstractMojo {
                 if (sourceDir.isAbsolute() == false) {
                     sourceDir = new File(project.getBasedir().getAbsolutePath(), copyFromSourceBaseDir);
                 }
-                getLog().info("Clean target and copy resources from source base dir: " + sourceDir.getAbsolutePath());
                 util.setComponentSourceBaseDir(sourceDir.getAbsolutePath());
+                getLog().info("Clean target and copy resources from source base dir: " + sourceDir.getAbsolutePath());
                 int count = util.copyResources();
-                getLog().info("    " + count + " files copied.");
+                if (count == -1) {
+                	getLog().info("    No files copied because source is equals to target.");
+                } else {
+                    getLog().info("    " + count + " files copied.");
+                }
             } catch (Exception e) {
                 MojoFailureException me = new MojoFailureException("Copy resources from source failed: " + e.getMessage(), e);
                 throw me;

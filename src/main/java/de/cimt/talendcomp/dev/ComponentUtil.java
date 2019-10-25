@@ -58,7 +58,9 @@ public class ComponentUtil {
 	private List<String> listMissingMessageProperties = new ArrayList<String>();
 	private static final String ignoreFilePatternStr = ".svn|.git|.DS_Store|.class";
 	private Pattern ignoreFilePattern = null;
-
+	private String talendLibrariesGroupId = "org.talend.libraries";
+	private String talendLibrariesVersion = "6.0.0-SNAPSHOT";
+	
 	public void addJarFile(String jarFilePath) throws Exception {
 		File jar = new File(jarFilePath);
 		if (jar.exists() == false) {
@@ -198,12 +200,21 @@ public class ComponentUtil {
 	private String getJarCommonName(String fileName) {
 		int pos = fileName.lastIndexOf("-");
 		if (pos > 0) {
-			if (fileName.contains("SNAPSHOT")) {
+			if (fileName.toUpperCase().contains("SNAPSHOT")) {
 				int pos2 = fileName.lastIndexOf("-", pos - 1);
 				return fileName.substring(0, pos2);
 			} else {
 				return fileName.substring(0, pos);
 			}
+		} else {
+			return fileName;
+		}
+	}
+
+	private String getJarNameWithoutExt(String fileName) {
+		int pos = fileName.lastIndexOf(".");
+		if (pos > 0) {
+			return fileName.substring(0, pos);
 		} else {
 			return fileName;
 		}
@@ -215,7 +226,18 @@ public class ComponentUtil {
 		}
 		return componentReleaseDate;
 	}
-
+	
+	private String buildMVNAttributeForShippedJars(File jar) {
+		StringBuilder sb = new StringBuilder();
+		sb.append("mvn:");
+		sb.append(talendLibrariesGroupId);
+		sb.append("/");
+		sb.append(getJarNameWithoutExt(jar.getName()));
+		sb.append("/");
+		sb.append(talendLibrariesVersion);
+		return sb.toString();
+	}
+	
 	public void setupXMLImports(boolean keepExistingNodes, List<CompDependency> dependencies) throws Exception {
 		Element importsNode = (Element) xmlDoc.selectSingleNode("/COMPONENT/CODEGENERATION/IMPORTS");
 		if (importsNode == null) {
@@ -248,6 +270,7 @@ public class ComponentUtil {
 			importsNode.addElement("IMPORT")
 					.addAttribute("NAME", getJarCommonName(jar.getName()))
 					.addAttribute("MODULE", jar.getName())
+					.addAttribute("MVN", buildMVNAttributeForShippedJars(jar))
 					.addAttribute("REQUIRED", "true");
 		}
 
@@ -447,6 +470,9 @@ public class ComponentUtil {
 		if (targetDir.exists() == false) {
 			targetDir.mkdirs();
 		} else {
+			if (targetDir.equals(sourceDir)) {
+				return -1;
+			}
 			cleanTarget(targetDir);
 		}
 		if (targetDir.exists() == false) {
@@ -523,6 +549,22 @@ public class ComponentUtil {
 			ignoreFilePattern = Pattern.compile(ignoreFilePatternStr);
 		}
 		return ignoreFilePattern;
+	}
+
+	public String getTalendLibrariesGroupId() {
+		return talendLibrariesGroupId;
+	}
+
+	public void setTalendLibrariesGroupId(String groupIdTalendLibraries) {
+		this.talendLibrariesGroupId = groupIdTalendLibraries;
+	}
+
+	public String getTalendLibrariesVersion() {
+		return talendLibrariesVersion;
+	}
+
+	public void setTalendLibrariesVersion(String versionTalendLibraries) {
+		this.talendLibrariesVersion = versionTalendLibraries;
 	}
 
 }
