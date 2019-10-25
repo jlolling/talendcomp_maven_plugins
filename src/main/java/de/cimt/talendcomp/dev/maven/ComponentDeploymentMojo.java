@@ -167,25 +167,22 @@ public class ComponentDeploymentMojo extends AbstractMojo {
                 }
             }
         }
-        
-        if (copyFromSourceBaseDir != null && copyFromSourceBaseDir.trim().isEmpty() == false) {
-            try {
-                File sourceDir = new File(copyFromSourceBaseDir);
-                if (sourceDir.isAbsolute() == false) {
-                    sourceDir = new File(project.getBasedir().getAbsolutePath(), copyFromSourceBaseDir);
-                }
-                util.setComponentSourceBaseDir(sourceDir.getAbsolutePath());
-                getLog().info("Clean target and copy resources from source base dir: " + sourceDir.getAbsolutePath());
-                int count = util.copyResources();
-                if (count == -1) {
-                	getLog().info("    No files copied because source is equals to target.");
-                } else {
-                    getLog().info("    " + count + " files copied.");
-                }
-            } catch (Exception e) {
-                MojoFailureException me = new MojoFailureException("Copy resources from source failed: " + e.getMessage(), e);
-                throw me;
+        try {
+            File sourceDir = new File(copyFromSourceBaseDir);
+            if (sourceDir.isAbsolute() == false) {
+                sourceDir = new File(project.getBasedir().getAbsolutePath(), copyFromSourceBaseDir);
             }
+            util.setComponentSourceBaseDir(sourceDir.getAbsolutePath());
+            getLog().info("Clean target and copy resources from source base dir: " + sourceDir.getAbsolutePath());
+            int count = util.copyResources();
+            if (count == -1) {
+            	getLog().info("    No files copied because source is equals to target.");
+            } else {
+                getLog().info("    " + count + " files copied.");
+            }
+        } catch (Exception e) {
+            MojoFailureException me = new MojoFailureException("Copy resources from source failed: " + e.getMessage(), e);
+            throw me;
         }
         getLog().info("Read component XML configuration...");
         try {
