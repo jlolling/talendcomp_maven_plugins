@@ -15,13 +15,11 @@ If you have more than one component in your project, use multiple executions, th
 	<plugin>
 		<groupId>de.cimt.talendcomp</groupId>
 		<artifactId>cimt-talendcomp-maven-plugin</artifactId>
-		<version>1.8</version>
+		<version>2.1</version>
 		<configuration>
-			<componentName>tComponent1</componentName>
-			<componentBaseDir>${project.basedir}/talend_component</componentBaseDir>
-			<componentVersion>${project.version}</componentVersion>
 			<checkMessageProperties>true</checkMessageProperties>
 			<copyFromSourceBaseDir>src/talend_component/</copyFromSourceBaseDir>
+			<componentBaseDir>${project.basedir}/talend_component</componentBaseDir>
 		</configuration>
 		<executions>
 			<execution>
@@ -99,16 +97,18 @@ Example:
 ```xml
   <CODEGENERATION> 
     <IMPORTS> 
-      <IMPORT NAME="cimt-talendcomp-excel" MODULE="cimt-talendcomp-excel-8.0.jar" REQUIRED="true"/>
-      <IMPORT NAME="poi-ooxml" MODULE="poi-ooxml-3.15.jar" REQUIRED="true"/>
-      <IMPORT NAME="poi" MODULE="poi-3.15.jar" REQUIRED="true"/>
-      <IMPORT NAME="commons-codec" MODULE="commons-codec-1.10.jar" REQUIRED="true"/>
-      <IMPORT NAME="commons-collections4" MODULE="commons-collections4-4.1.jar" REQUIRED="true"/>
-      <IMPORT NAME="poi-ooxml-schemas" MODULE="poi-ooxml-schemas-3.15.jar" REQUIRED="true"/>
-      <IMPORT NAME="xmlbeans" MODULE="xmlbeans-2.6.0.jar" REQUIRED="true"/>
-      <IMPORT NAME="curvesapi" MODULE="curvesapi-1.04.jar" REQUIRED="true"/>
-      <IMPORT NAME="xalan" MODULE="xalan-2.7.2.jar" REQUIRED="true"/>
-      <IMPORT NAME="serializer" MODULE="serializer-2.7.2.jar" REQUIRED="true"/>
+      <IMPORT NAME="jlo-talendcomp-excel" MODULE="jlo-talendcomp-excel-11.3.jar" MVN="mvn:org.talend.libraries/jlo-talendcomp-excel-11.3/6.0.0-SNAPSHOT" REQUIRED="true"/>
+      <IMPORT NAME="poi-ooxml" MODULE="poi-ooxml-4.1.0.jar" MVN="mvn:org.talend.libraries/poi-ooxml-4.1.0/6.0.0-SNAPSHOT" REQUIRED="true"/>
+      <IMPORT NAME="poi" MODULE="poi-4.1.0.jar" MVN="mvn:org.talend.libraries/poi-4.1.0/6.0.0-SNAPSHOT" REQUIRED="true"/>
+      <IMPORT NAME="commons-codec" MODULE="commons-codec-1.12.jar" MVN="mvn:org.talend.libraries/commons-codec-1.12/6.0.0-SNAPSHOT" REQUIRED="true"/>
+      <IMPORT NAME="commons-collections4" MODULE="commons-collections4-4.3.jar" MVN="mvn:org.talend.libraries/commons-collections4-4.3/6.0.0-SNAPSHOT" REQUIRED="true"/>
+      <IMPORT NAME="commons-math3" MODULE="commons-math3-3.6.1.jar" MVN="mvn:org.talend.libraries/commons-math3-3.6.1/6.0.0-SNAPSHOT" REQUIRED="true"/>
+      <IMPORT NAME="poi-ooxml-schemas" MODULE="poi-ooxml-schemas-4.1.0.jar" MVN="mvn:org.talend.libraries/poi-ooxml-schemas-4.1.0/6.0.0-SNAPSHOT" REQUIRED="true"/>
+      <IMPORT NAME="xmlbeans" MODULE="xmlbeans-3.1.0.jar" MVN="mvn:org.talend.libraries/xmlbeans-3.1.0/6.0.0-SNAPSHOT" REQUIRED="true"/>
+      <IMPORT NAME="commons-compress" MODULE="commons-compress-1.18.jar" MVN="mvn:org.talend.libraries/commons-compress-1.18/6.0.0-SNAPSHOT" REQUIRED="true"/>
+      <IMPORT NAME="curvesapi" MODULE="curvesapi-1.06.jar" MVN="mvn:org.talend.libraries/curvesapi-1.06/6.0.0-SNAPSHOT" REQUIRED="true"/>
+      <IMPORT NAME="xalan" MODULE="xalan-2.7.2.jar" MVN="mvn:org.talend.libraries/xalan-2.7.2/6.0.0-SNAPSHOT" REQUIRED="true"/>
+      <IMPORT NAME="serializer" MODULE="serializer-2.7.2.jar" MVN="mvn:org.talend.libraries/serializer-2.7.2/6.0.0-SNAPSHOT" REQUIRED="true"/>
     </IMPORTS> 
   </CODEGENERATION>  
 ```
