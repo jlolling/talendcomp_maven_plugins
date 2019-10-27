@@ -41,9 +41,13 @@ public class ComponentDeploymentMojo extends AbstractMojo {
 
     @Parameter
     private String componentName;
+
     @Parameter(defaultValue = "${project.basedir}/target/components/")
     private String componentBaseDir;
     
+    @Parameter
+    private String studioUserComponentFolder;
+
     @Parameter(defaultValue = "${project.basedir}/src/main/components/")
     private String copyFromSourceBaseDir;
     
@@ -146,7 +150,7 @@ public class ComponentDeploymentMojo extends AbstractMojo {
             @SuppressWarnings("unchecked")
             Set<Artifact> artifacts = project.getArtifacts(); 
             for (Artifact a : artifacts) {
-            	getLog().debug("\t" + a.getArtifactId() + ":" + a.getVersion() + " scope: " + a.getScope());
+            	getLog().debug("    " + a.getArtifactId() + ":" + a.getVersion() + " scope: " + a.getScope());
             }
    
             List<String> excludeScopesList = new ArrayList<String>();
@@ -256,6 +260,21 @@ public class ComponentDeploymentMojo extends AbstractMojo {
                     throw me;
                 }
             }
+        }
+        if (studioUserComponentFolder != null && studioUserComponentFolder.trim().isEmpty() == false) {
+        	File dir = new File(studioUserComponentFolder);
+        	if (dir.exists() == false) {
+        		throw new MojoFailureException("Copy component to target studio folder failed: Directory " + dir.getAbsolutePath() + " does not exist.");
+        	} else if (dir.isDirectory() == false) {
+        		throw new MojoFailureException("Copy component to target studio folder failed: Path " + dir.getAbsolutePath() + " is not a directory.");
+        	}
+        	try {
+        		getLog().info("Copy component files to studio custom component dir: " + studioUserComponentFolder);
+				int numFilesCopied = util.copyComponentFilesToStudio(studioUserComponentFolder);
+				getLog().info("    " + numFilesCopied + " files copied.");
+			} catch (Exception e) {
+				throw new MojoFailureException("Copy component to target studio folder failed.", e);
+			}
         }
         getLog().info("Finished.");
     }

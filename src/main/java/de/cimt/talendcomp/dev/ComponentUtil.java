@@ -493,15 +493,39 @@ public class ComponentUtil {
 		return count;
 	}
 
-	private void cleanTarget(File targetDir) {
+	private int cleanTarget(File targetDir) {
+		int count = 0;
 		if (targetDir.exists()) {
 			File[] files = targetDir.listFiles();
 			for (File f : files) {
 				f.delete();
 			}
 		}
+		return count;
 	}
 
+	public int copyComponentFilesToStudio(String studioUserComponentFolder) throws Exception {
+		int numFiles = 0;
+		File targetDir = new File(studioUserComponentFolder, componentName);
+		if (targetDir.exists()) {
+			cleanTarget(targetDir);
+		} else {
+			targetDir.mkdirs();
+		}
+		File baseCompDir = new File(componentBaseDir, componentName);
+		File[] compFiles = baseCompDir.listFiles();
+		for (File sf : compFiles) {
+			File tf = new File(targetDir, sf.getName());
+			try {
+				copyFile(sf, tf);
+				numFiles++;
+			} catch (Exception e) {
+				throw new Exception("copyComponentFilesToStudio for component " + componentName + " failed.", e);
+			}
+		}
+		return numFiles;
+	}
+	
 	private void copyFile(File source, File target) throws Exception {
 		if (source.exists() == false || source.canRead() == false) {
 			throw new Exception("Copy file: " + source.getAbsolutePath() + " failed: file doe not exist.");
