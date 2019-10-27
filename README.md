@@ -61,35 +61,40 @@ If some components needs dedicated jars and other don't you can use the `jarExcl
 
 This is a typical maven log output:
 ```
-[INFO] --- cimt-talendcomp-maven-plugin:1.8:component (tFileExcelWorkbookOpen) @ cimt-talendcomp-excel ---
-[INFO] ############ Setup component: tFileExcelWorkbookOpen with base dir: /Volumes/Data/Talend/workspace_talend_comp/talendcomp_tFileExcel/talend_component
+--- cimt-talendcomp-maven-plugin:2.1:component (tFileExcelWorkbookOpen) @ jlo-talendcomp-excel ---
+[INFO] ############ Setup component: tFileExcelWorkbookOpen with base dir: /Data/Talend/workspace_talend_comp/talendcomp_tFileExcel/talend_component
 [INFO] Check dependencies and collect artifact jar files...
-[INFO]     file: /Volumes/Data/Talend/workspace_talend_comp/talendcomp_tFileExcel/target/cimt-talendcomp-excel-8.0.jar
-[INFO]     file: /Users/jan/.m2/repository/org/apache/poi/poi-ooxml/3.15/poi-ooxml-3.15.jar scope: compile
-[INFO]     file: /Users/jan/.m2/repository/org/apache/poi/poi/3.15/poi-3.15.jar scope: compile
-[INFO]     file: /Users/jan/.m2/repository/commons-codec/commons-codec/1.10/commons-codec-1.10.jar scope: compile
-[INFO]     file: /Users/jan/.m2/repository/org/apache/commons/commons-collections4/4.1/commons-collections4-4.1.jar scope: compile
-[INFO]     file: /Users/jan/.m2/repository/org/apache/poi/poi-ooxml-schemas/3.15/poi-ooxml-schemas-3.15.jar scope: compile
-[INFO]     file: /Users/jan/.m2/repository/org/apache/xmlbeans/xmlbeans/2.6.0/xmlbeans-2.6.0.jar scope: compile
-[INFO]     file: /Users/jan/.m2/repository/com/github/virtuald/curvesapi/1.04/curvesapi-1.04.jar scope: compile
-[INFO]     file: /Users/jan/.m2/repository/xalan/xalan/2.7.2/xalan-2.7.2.jar scope: compile
-[INFO]     file: /Users/jan/.m2/repository/xalan/serializer/2.7.2/serializer-2.7.2.jar scope: compile
-[INFO] Clean target and copy resources from source base dir: /Volumes/Data/Talend/workspace_talend_comp/talendcomp_tFileExcel/talend_component
-[INFO]     5 files copied.
+[INFO]     file: /Data/Talend/workspace_talend_comp/talendcomp_tFileExcel/target/jlo-talendcomp-excel-11.3.jar
+[INFO] Collect project artifacts without scope [system, test, provided]
+[INFO]       Add file: /Users/jan/.m2/repository/org/apache/poi/poi-ooxml/4.1.0/poi-ooxml-4.1.0.jar
+[INFO]       Add file: /Users/jan/.m2/repository/org/apache/poi/poi/4.1.0/poi-4.1.0.jar
+[INFO]       Add file: /Users/jan/.m2/repository/commons-codec/commons-codec/1.12/commons-codec-1.12.jar
+[INFO]       Add file: /Users/jan/.m2/repository/org/apache/commons/commons-collections4/4.3/commons-collections4-4.3.jar
+[INFO]       Add file: /Users/jan/.m2/repository/org/apache/commons/commons-math3/3.6.1/commons-math3-3.6.1.jar
+[INFO]       Add file: /Users/jan/.m2/repository/org/apache/poi/poi-ooxml-schemas/4.1.0/poi-ooxml-schemas-4.1.0.jar
+[INFO]       Add file: /Users/jan/.m2/repository/org/apache/xmlbeans/xmlbeans/3.1.0/xmlbeans-3.1.0.jar
+[INFO]       Add file: /Users/jan/.m2/repository/org/apache/commons/commons-compress/1.18/commons-compress-1.18.jar
+[INFO]       Add file: /Users/jan/.m2/repository/com/github/virtuald/curvesapi/1.06/curvesapi-1.06.jar
+[INFO]       Add file: /Users/jan/.m2/repository/xalan/xalan/2.7.2/xalan-2.7.2.jar
+[INFO]       Add file: /Users/jan/.m2/repository/xalan/serializer/2.7.2/serializer-2.7.2.jar
+[INFO] Clean target and copy resources from source base dir: /Data/Talend/workspace_talend_comp/talendcomp_tFileExcel/talend_component
+[INFO]     Source and target component folder are the same. No cleanup proceeded and no files copied.
 [INFO] Read component XML configuration...
-[INFO]     XML configuration file: /Volumes/Data/Talend/workspace_talend_comp/talendcomp_tFileExcel/talend_component/tFileExcelWorkbookOpen/tFileExcelWorkbookOpen_java.xml sucessfully read
+[INFO]     XML configuration file: /Data/Talend/workspace_talend_comp/talendcomp_tFileExcel/talend_component/tFileExcelWorkbookOpen/tFileExcelWorkbookOpen_java.xml sucessfully read
 [INFO] Remove previous jars from component...
-[INFO]     10 old jars deleted.
+[INFO]     12 old jars deleted.
 [INFO] Copy jars into component...
-[INFO]     10 jars copied.
+[INFO]     12 jars copied.
 [INFO] Process component XML configuration...
-[INFO]     setup imports...
+[INFO]     setup imports removing  existing values ...
 [INFO]     setup release and version info...
-[INFO] Done.
+[INFO]     Done.
 [INFO] Write back component XML configuration...
-[INFO]     XML configuration file: /Volumes/Data/Talend/workspace_talend_comp/talendcomp_tFileExcel/talend_component/tFileExcelWorkbookOpen/tFileExcelWorkbookOpen_java.xml sucessfully written.
+[INFO]     XML configuration file: /Data/Talend/workspace_talend_comp/talendcomp_tFileExcel/talend_component/tFileExcelWorkbookOpen/tFileExcelWorkbookOpen_java.xml successfully written.
 [INFO] Check message properties...
-[INFO]     Read message properties file: /Volumes/Data/Talend/workspace_talend_comp/talendcomp_tFileExcel/talend_component/tFileExcelWorkbookOpen/tFileExcelWorkbookOpen_messages.properties
+[INFO]     Read message properties file: /Data/Talend/workspace_talend_comp/talendcomp_tFileExcel/talend_component/tFileExcelWorkbookOpen/tFileExcelWorkbookOpen_messages.properties
+[INFO] Copy component files to studio custom component dir: /Data/Talend/Studio/talend_user_components
+[INFO]     19 files copied.
 [INFO] Finished.
 ```
 
