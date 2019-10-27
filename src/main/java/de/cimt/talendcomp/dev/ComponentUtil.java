@@ -238,6 +238,17 @@ public class ComponentUtil {
 		return sb.toString();
 	}
 	
+	private String buildMVNAttributeForAdditionalDependency(CompDependency dependency) {
+		StringBuilder sb = new StringBuilder();
+		sb.append("mvn:");
+		sb.append(dependency.getGroupId());
+		sb.append("/");
+		sb.append(dependency.getArtifactId());
+		sb.append("/");
+		sb.append(dependency.getVersion());
+		return sb.toString();
+	}
+
 	public void setupXMLImports(boolean keepExistingNodes, List<CompDependency> dependencies) throws Exception {
 		Element importsNode = (Element) xmlDoc.selectSingleNode("/COMPONENT/CODEGENERATION/IMPORTS");
 		if (importsNode == null) {
@@ -279,15 +290,9 @@ public class ComponentUtil {
 
 		for (CompDependency dependency : dependencies) {
 			final Element elem = importsNode.addElement("IMPORT");
-			elem.addAttribute("NAME", dependency.getArtifactId() + "_" + dependency.getVersion());
+			elem.addAttribute("NAME", dependency.getArtifactId());
 			elem.addAttribute("MODULE", dependency.getDestFileName());
-			elem.addAttribute("MVN", "mvn:" + 
-					dependency.getGroupId() + 
-					"/" + 
-					dependency.getArtifactId() + 
-					"/" +
-					dependency.getVersion());
-
+			elem.addAttribute("MVN", buildMVNAttributeForAdditionalDependency(dependency));
 			if (dependency.isRequired()) {
 				elem.addAttribute("REQUIRED", "true");
 			}
@@ -355,9 +360,11 @@ public class ComponentUtil {
 		return messagePropertiesFile.getAbsolutePath();
 	}
 	
-	private void addMissingMessageProperty(String key) {
-		if (listMissingMessageProperties.contains(key) == false) {
-			listMissingMessageProperties.add(key);
+	private void checkMissingMessageProperty(String key) {
+		if (messages.containsKey(key) == false) {
+			if (listMissingMessageProperties.contains(key) == false) {
+				listMissingMessageProperties.add(key);
+			}
 		}
 	}
 
@@ -371,9 +378,7 @@ public class ComponentUtil {
 			String name = node.getStringValue().trim();
 			if ("PROPERTY".equals(name) == false) {
 				String key = name + ".NAME";
-				if (messages.containsKey(key) == false) {
-					addMissingMessageProperty(key);
-				}
+				checkMissingMessageProperty(key);
 			}
 		}
 		// read closed list parameters
@@ -384,18 +389,14 @@ public class ComponentUtil {
 			for (Node itemNode1 : itemNodes1) {
 				String itemNodeName1 = itemNode1.getStringValue().trim();
 				String key1 = name + ".ITEM." + itemNodeName1;
-				if (messages.containsKey(key1) == false) {
-					addMissingMessageProperty(key1);
-				}
+				checkMissingMessageProperty(key1);
 				// check list in items
 				List<Node> itemNodes2 = xmlDoc.selectNodes("/COMPONENT/*/PARAMETER[@NAME='" + name
 						+ "']/ITEMS/ITEM[@NAME='" + itemNodeName1 + "']/ITEMS/ITEM/@NAME");
 				for (Node itemNode2 : itemNodes2) {
 					String itemNodeName2 = itemNode2.getStringValue().trim();
 					String key2 = key1 + ".ITEM." + itemNodeName2;
-					if (messages.containsKey(key2) == false) {
-						addMissingMessageProperty(key2);
-					}
+					checkMissingMessageProperty(key2);
 				}
 			}
 		}
@@ -405,9 +406,7 @@ public class ComponentUtil {
 			String name = node.getStringValue().trim();
 			if ("PROPERTY".equals(name) == false) {
 				String key = name + ".NAME";
-				if (messages.containsKey(key) == false) {
-					addMissingMessageProperty(key);
-				}
+				checkMissingMessageProperty(key);
 			}
 		}
 		// read return value names
@@ -415,27 +414,19 @@ public class ComponentUtil {
 		for (Node node : paramNameNodes) {
 			String name = node.getStringValue().trim();
 			String key = name + ".NAME";
-			if (messages.containsKey(key) == false) {
-				addMissingMessageProperty(key);
-			}
+			checkMissingMessageProperty(key);
 		}
 		// read connector names
 		paramNameNodes = xmlDoc.selectNodes("/COMPONENT/CONNECTORS/CONNECTOR/@NAME");
 		for (Node node : paramNameNodes) {
 			String name = node.getStringValue().trim();
 			String keyMenu = name + ".MENU";
-			if (messages.containsKey(keyMenu) == false) {
-				addMissingMessageProperty(keyMenu);
-			}
+			checkMissingMessageProperty(keyMenu);
 			String keyLink = name + ".LINK";
-			if (messages.containsKey(keyLink) == false) {
-				addMissingMessageProperty(keyLink);
-			}
+			checkMissingMessageProperty(keyLink);
 		}
 		String longNameKey = "LONG_NAME";
-		if (messages.containsKey(longNameKey) == false) {
-			addMissingMessageProperty(longNameKey);
-		}
+		checkMissingMessageProperty(longNameKey);
 		return fileName;
 	}
 
@@ -540,7 +531,7 @@ public class ComponentUtil {
 			}
 		}
 		if (ex != null) {
-			throw ex;
+			throw new Exception("Copy source: " + source.getAbsolutePath() + " to target: " + target.getAbsolutePath() + " failed: " + ex.getMessage(), ex);
 		}
 	}
 

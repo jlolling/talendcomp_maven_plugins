@@ -71,16 +71,10 @@ public class ComponentDeploymentMojo extends AbstractMojo {
     @Parameter(defaultValue = "false")
     private boolean keepImports;
     
-    @Parameter(defaultValue = "org.talend.libraries")
-	private String talendLibrariesGroupId;
-    
-    @Parameter(defaultValue = "6.0.0-SNAPSHOT")
-	private String talendLibrariesVersion;
-
-	/**
-     * Comma separated list of scopes to be excluded. Default to test, provided
+    /**
+     * Comma seperated list of scopes to be expluded. Default to compile, test, system, provided
      */
-    @Parameter(defaultValue = "test, provided")
+    @Parameter(defaultValue = "compile, test, system, provided")
     private String excludeScopes;
     
     /**
@@ -123,8 +117,6 @@ public class ComponentDeploymentMojo extends AbstractMojo {
         util.setComponentName(componentName);
         util.setComponentVersion(componentVersion);
         util.setComponentReleaseDate(componentReleaseDate);
-        util.setTalendLibrariesGroupId(talendLibrariesGroupId);
-        util.setTalendLibrariesVersion(talendLibrariesVersion);
         if (noJars == false) {
             getLog().info("Check dependencies and collect artifact jar files...");
             if (jarExcludePattern != null && jarExcludePattern.trim().isEmpty() == false) {
@@ -132,13 +124,21 @@ public class ComponentDeploymentMojo extends AbstractMojo {
             }
             Artifact mainArtifact = project.getArtifact();
             if (mainArtifact != null) {
-                String path = mainArtifact.getFile().getAbsolutePath();
-                if (filterJarFile(path)) {
-                    try {
-                        util.addJarFile(path);
-                        getLog().info("    file: " + path);
-                    } catch (Exception e) {
-                        throw new MojoExecutionException("Main artifact: " + mainArtifact + ": failed get jar file: " + mainArtifact.getFile().getAbsolutePath());
+                try {
+                    String path = mainArtifact.getFile().getAbsolutePath();
+                    if (filterJarFile(path)) {
+                        try {
+                            util.addJarFile(path);
+                            getLog().info("    file: " + path);
+                        } catch (Exception e) {
+                            throw new MojoExecutionException("Main artifact: " + mainArtifact + ": failed get jar file: " + mainArtifact.getFile().getAbsolutePath());
+                        }
+                    }
+                } catch (java.lang.NullPointerException npe) {
+                    if (!project.getPackaging().equalsIgnoreCase("jar")) {
+                        getLog().warn("No local jar is created!");
+                    } else {
+                        throw new MojoExecutionException("failed to create jar file.");
                     }
                 }
             }
@@ -146,12 +146,11 @@ public class ComponentDeploymentMojo extends AbstractMojo {
             Set<Artifact> artifacts = project.getArtifacts(); 
             
             List<String> excludeScopesList = new ArrayList<String>();
-            if(excludeScopes!=null && !excludeScopes.trim().isEmpty()) {
+            if (excludeScopes!=null && !excludeScopes.trim().isEmpty()) {
                 excludeScopesList.addAll( Arrays.<String>asList( excludeScopes.toLowerCase().split("\\s*,\\s*") ) );
             }
             getLog().info("Collect project artifacts without scope " + excludeScopesList);
             for (Artifact a : artifacts) {
-            	getLog().info("    Check artifact: " + a.getGroupId() + "/" + a.getArtifactId() + ":" + a.getVersion() + " scope: " + a.getScope());
                 if ( !excludeScopesList.contains( a.getScope()) ) {
                     String path = a.getFile().getAbsolutePath();
                     if (filterJarFile(path)) {
@@ -162,21 +161,20 @@ public class ComponentDeploymentMojo extends AbstractMojo {
                             throw new MojoExecutionException("Artifact: " + a + ": failed get jar file: " + path);
                         }
                     }
-                } else {
-                	getLog().info("      Rejected.");
                 }
             }
         }
+        
         try {
             File sourceDir = new File(copyFromSourceBaseDir);
             if (sourceDir.isAbsolute() == false) {
                 sourceDir = new File(project.getBasedir().getAbsolutePath(), copyFromSourceBaseDir);
             }
-            util.setComponentSourceBaseDir(sourceDir.getAbsolutePath());
             getLog().info("Clean target and copy resources from source base dir: " + sourceDir.getAbsolutePath());
+            util.setComponentSourceBaseDir(sourceDir.getAbsolutePath());
             int count = util.copyResources();
             if (count == -1) {
-            	getLog().info("    No files copied because source is equals to target.");
+                getLog().info("    Source and target component folder are the same. No cleanup proceeded and no files copied.");
             } else {
                 getLog().info("    " + count + " files copied.");
             }
