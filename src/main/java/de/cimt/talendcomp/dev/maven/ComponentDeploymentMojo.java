@@ -74,7 +74,7 @@ public class ComponentDeploymentMojo extends AbstractMojo {
     /**
      * Comma seperated list of scopes to be expluded. Default to compile, test, system, provided
      */
-    @Parameter(defaultValue = "compile, test, system, provided")
+    @Parameter(defaultValue = "system, test, provided")
     private String excludeScopes;
     
     /**
@@ -142,11 +142,15 @@ public class ComponentDeploymentMojo extends AbstractMojo {
                     }
                 }
             }
+        	getLog().debug("Dependencies found:");
             @SuppressWarnings("unchecked")
             Set<Artifact> artifacts = project.getArtifacts(); 
-            
+            for (Artifact a : artifacts) {
+            	getLog().debug("\t" + a.getArtifactId() + ":" + a.getVersion() + " scope: " + a.getScope());
+            }
+   
             List<String> excludeScopesList = new ArrayList<String>();
-            if (excludeScopes!=null && !excludeScopes.trim().isEmpty()) {
+            if (excludeScopes != null && !excludeScopes.trim().isEmpty()) {
                 excludeScopesList.addAll( Arrays.<String>asList( excludeScopes.toLowerCase().split("\\s*,\\s*") ) );
             }
             getLog().info("Collect project artifacts without scope " + excludeScopesList);
