@@ -20,6 +20,7 @@ If you have more than one component in your project, use multiple executions, th
 			<checkMessageProperties>true</checkMessageProperties>
 			<copyFromSourceBaseDir>src/talend_component/</copyFromSourceBaseDir>
 			<componentBaseDir>${project.basedir}/talend_component</componentBaseDir>
+			<studioUserComponentFolder>/Data/Talend/Studio/talend_user_components</studioUserComponentFolder>
 		</configuration>
 		<executions>
 			<execution>
