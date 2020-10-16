@@ -51,8 +51,8 @@ public class ComponentUtil {
 	private String componentReleaseDate = null;
 	private boolean addReleaseInfoAsLabel = true;
 	private Document xmlDoc = null;
-	private List<File> listJars = new ArrayList<File>();
-	private SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+	private List<CompDependency> listDependencies = new ArrayList<CompDependency>();
+	private SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd-HHmmss");
 	private File messagePropertiesFile = null;
 	private Properties messages = new Properties();
 	private List<String> listMissingMessageProperties = new ArrayList<String>();
@@ -61,12 +61,24 @@ public class ComponentUtil {
 	private String talendLibrariesGroupId = "org.talend.libraries";
 	private String talendLibrariesVersion = "6.0.0-SNAPSHOT";
 	
-	public void addJarFile(String jarFilePath) throws Exception {
-		File jar = new File(jarFilePath);
-		if (jar.exists() == false) {
-			throw new Exception("jar file: " + jarFilePath + " does not exist!");
+	public void addBundledDependency(CompDependency dep) throws Exception {
+		if (dep.getArtifactId() == null) {
+			throw new Exception("Dependency: " + dep + " has no artifactId!");
 		}
-		listJars.add(jar);
+		if (dep.getVersion() == null) {
+			throw new Exception("Dependency: " + dep + " has no version!");
+		}
+		if (dep.getGroupId() == null) {
+			throw new Exception("Dependency: " + dep + " has no groupId!");
+		}
+		if (dep.getSourceFilePath() == null) {
+			throw new Exception("Dependency: " + dep + " has no set sourceFilePath!");
+		}
+		File jar = new File(dep.getSourceFilePath());
+		if (jar.exists() == false) {
+			throw new Exception("Dependency: " + dep + " jar file: " + jar.getAbsolutePath() + " does not exist!");
+		}
+		listDependencies.add(dep);
 	}
 
 	public String getComponentName() {
@@ -186,7 +198,8 @@ public class ComponentUtil {
 		}
 		int count = 0;
 		File dir = new File(componentBaseDir, componentName);
-		for (File jarFile : listJars) {
+		for (CompDependency dep : listDependencies) {
+			File jarFile = new File(dep.getSourceFilePath());
 			if (jarFile.exists() == false) {
 				throw new Exception("");
 			}
@@ -227,7 +240,7 @@ public class ComponentUtil {
 		return componentReleaseDate;
 	}
 	
-	private String buildMVNAttributeForShippedJars(File jar) {
+	private String buildMVNAttributeDependencyTalendStyle(File jar) {
 		StringBuilder sb = new StringBuilder();
 		sb.append("mvn:");
 		sb.append(talendLibrariesGroupId);
@@ -238,7 +251,7 @@ public class ComponentUtil {
 		return sb.toString();
 	}
 	
-	private String buildMVNAttributeForAdditionalDependency(CompDependency dependency) {
+	private String buildMVNAttributeDependencyActual(CompDependency dependency) {
 		StringBuilder sb = new StringBuilder();
 		sb.append("mvn:");
 		sb.append(dependency.getGroupId());
@@ -249,7 +262,7 @@ public class ComponentUtil {
 		return sb.toString();
 	}
 
-	public void setupXMLImports(boolean keepExistingNodes, List<CompDependency> dependencies) throws Exception {
+	public void setupXMLImports(boolean keepExistingNodes, List<CompDependency> unbundledDependencies, boolean setupXMLImportsWithActualArtifactIds) throws Exception {
 		Element importsNode = (Element) xmlDoc.selectSingleNode("/COMPONENT/CODEGENERATION/IMPORTS");
 		if (importsNode == null) {
 			// we must create an IMPORTS node
@@ -277,22 +290,31 @@ public class ComponentUtil {
 		}
 
 		// add new jars as IMPORT tags
-		for (File jar : listJars) {
-			importsNode.addElement("IMPORT")
-					.addAttribute("NAME", getJarCommonName(jar.getName()))
-					.addAttribute("MODULE", jar.getName())
-					.addAttribute("MVN", buildMVNAttributeForShippedJars(jar))
-					.addAttribute("REQUIRED", "true");
+		for (CompDependency dep : listDependencies) {
+			if (setupXMLImportsWithActualArtifactIds) {
+				importsNode.addElement("IMPORT")
+				.addAttribute("NAME", dep.getArtifactId())
+				.addAttribute("MODULE", dep.getSourceFileName())
+				.addAttribute("MVN", buildMVNAttributeDependencyActual(dep))
+				.addAttribute("REQUIRED", "true");
+			} else {
+				File jar = new File(dep.getSourceFilePath());
+				importsNode.addElement("IMPORT")
+						.addAttribute("NAME", getJarCommonName(jar.getName()))
+						.addAttribute("MODULE", jar.getName())
+						.addAttribute("MVN", buildMVNAttributeDependencyTalendStyle(jar))
+						.addAttribute("REQUIRED", "true");
+			}
 		}
 
-		if (dependencies == null || dependencies.isEmpty())
+		if (unbundledDependencies == null || unbundledDependencies.isEmpty())
 			return;
 
-		for (CompDependency dependency : dependencies) {
+		for (CompDependency dependency : unbundledDependencies) {
 			final Element elem = importsNode.addElement("IMPORT");
 			elem.addAttribute("NAME", dependency.getArtifactId());
 			elem.addAttribute("MODULE", dependency.getDestFileName());
-			elem.addAttribute("MVN", buildMVNAttributeForAdditionalDependency(dependency));
+			elem.addAttribute("MVN", buildMVNAttributeDependencyActual(dependency));
 			if (dependency.isRequired()) {
 				elem.addAttribute("REQUIRED", "true");
 			}
@@ -520,7 +542,7 @@ public class ComponentUtil {
 				copyFile(sf, tf);
 				numFiles++;
 			} catch (Exception e) {
-				throw new Exception("copyComponentFilesToStudio for component " + componentName + " failed.", e);
+				throw new Exception("Copy component file: " + sf.getAbsolutePath() + " to studio for the component " + componentName + " failed.", e);
 			}
 		}
 		return numFiles;

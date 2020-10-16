@@ -56,6 +56,12 @@ public class CompDependency   {
      * @required
      */
     private String type = "jar";
+    
+    /**
+     * The path where the artifact comes from
+     * @parameter
+     */
+    private File sourceFile = null;
 
     /**
      * Classifier for Artifact (tests,sources,etc)
@@ -130,22 +136,20 @@ public class CompDependency   {
     /**
      * @param artifact {@link Artifact}
      */
-    public CompDependency( Artifact artifact )
-    {
+    public CompDependency(Artifact artifact) {
         this.artifactId = artifact.getArtifactId();
         this.classifier = artifact.getClassifier();
         this.groupId = artifact.getGroupId();
         this.type = artifact.getType();
         this.version = artifact.getVersion();
-        try{
+        this.sourceFile = artifact.getFile();
+        try {
             this.destFileName = artifact.getFile().getName();
-        }catch(Throwable t){}
+        } catch (Throwable t) {}
     }
 
-    private String filterEmptyString( String in )
-    {
-        if ( "".equals( in ) )
-        {
+    private String filterEmptyString(String in) {
+        if ("".equals( in )) {
             return null;
         }
         return in;
@@ -154,100 +158,85 @@ public class CompDependency   {
     /**
      * @return Returns the artifactId.
      */
-    public String getArtifactId()
-    {
+    public String getArtifactId() {
         return artifactId;
     }
 
     /**
      * @param theArtifact The artifactId to set.
      */
-    public void setArtifactId( String theArtifact )
-    {
+    public void setArtifactId( String theArtifact ) {
         this.artifactId = filterEmptyString( theArtifact );
     }
 
     /**
      * @return Returns the groupId.
      */
-    public String getGroupId()
-    {
+    public String getGroupId() {
         return groupId;
     }
 
     /**
      * @param groupId The groupId to set.
      */
-    public void setGroupId( String groupId )
-    {
+    public void setGroupId( String groupId ) {
         this.groupId = filterEmptyString( groupId );
     }
 
     /**
      * @return Returns the type.
      */
-    public String getType()
-    {
+    public String getType() {
         return type;
     }
 
     /**
      * @param type The type to set.
      */
-    public void setType( String type )
-    {
+    public void setType( String type ) {
         this.type = filterEmptyString( type );
     }
 
     /**
      * @return Returns the version.
      */
-    public String getVersion()
-    {
+    public String getVersion() {
         return version;
     }
 
     /**
      * @param version The version to set.
      */
-    public void setVersion( String version )
-    {
+    public void setVersion( String version ) {
         this.version = filterEmptyString( version );
     }
 
     /**
      * @return Returns the base version.
      */
-    public String getBaseVersion()
-    {
+    public String getBaseVersion() {
         return ArtifactUtils.toSnapshotVersion( version );
     }
 
     /**
      * @return Classifier.
      */
-    public String getClassifier()
-    {
+    public String getClassifier() {
         return classifier;
     }
 
     /**
      * @param classifier Classifier.
      */
-    public void setClassifier( String classifier )
-    {
+    public void setClassifier( String classifier ) {
         this.classifier = filterEmptyString( classifier );
     }
 
     @Override
-    public String toString()
-    {
-        if ( this.classifier == null )
-        {
+    public String toString() {
+        if ( this.classifier == null ) {
             return groupId + ":" + artifactId + ":" + StringUtils.defaultString( version, "?" ) + ":" + type;
-        }
-        else
-        {
+        } else {
             return groupId + ":" + artifactId + ":" + classifier + ":" + StringUtils.defaultString( version, "?" ) + ":"
                 + type;
         }
@@ -256,64 +245,56 @@ public class CompDependency   {
     /**
      * @return Returns the location.
      */
-    public File getOutputDirectory()
-    {
+    public File getOutputDirectory() {
         return outputDirectory;
     }
 
     /**
      * @param outputDirectory The outputDirectory to set.
      */
-    public void setOutputDirectory( File outputDirectory )
-    {
+    public void setOutputDirectory( File outputDirectory ) {
         this.outputDirectory = outputDirectory;
     }
 
     /**
      * @return Returns the location.
      */
-    public String getDestFileName()
-    {
+    public String getDestFileName() {
         return destFileName!=null ? destFileName : this.artifactId + "_" + this.version + ".jar";
     }
 
     /**
      * @param destFileName The destFileName to set.
      */
-    public void setDestFileName( String destFileName )
-    {
+    public void setDestFileName( String destFileName ) {
         this.destFileName = filterEmptyString( destFileName );
     }
 
     /**
      * @return Returns a comma separated list of excluded items
      */
-    public String getExcludes()
-    {
+    public String getExcludes() {
         return cleanToBeTokenizedString( this.excludes );
     }
 
     /**
      * @param excludes A comma separated list of items to exclude i.e. <code>**\/*.xml, **\/*.properties</code>
      */
-    public void setExcludes( String excludes )
-    {
+    public void setExcludes( String excludes ) {
         this.excludes = excludes;
     }
 
     /**
      * @return Returns a comma separated list of included items
      */
-    public String getIncludes()
-    {
+    public String getIncludes() {
         return cleanToBeTokenizedString( this.includes );
     }
 
     /**
      * @param includes A comma separated list of items to include i.e. <code>**\/*.xml, **\/*.properties</code>
      */
-    public void setIncludes( String includes )
-    {
+    public void setIncludes( String includes ) {
         this.includes = includes;
     }    
 
@@ -346,6 +327,17 @@ public class CompDependency   {
     public void setRequired(boolean required) {
         this.required = required;
     }
+
+	public String getSourceFilePath() {
+		return sourceFile.getAbsolutePath();
+	}
     
-    
+	public String getSourceFileName() {
+		return sourceFile.getName();
+	}
+	
+	public void setSourceFile(File file) {
+		this.sourceFile = file;
+	}
+
 }

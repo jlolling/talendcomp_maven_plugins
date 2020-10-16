@@ -81,12 +81,20 @@ public class ComponentDeploymentMojo extends AbstractMojo {
     @Parameter(defaultValue = "system, test, provided")
     private String excludeScopes;
     
+	/**
+	 * If set true the maven modules in the component XML file will be setup with the 
+	 * real artifactIds and version and not with the artificial artifactIds and talend version
+	 * @param setupXMLImportsWithActualArtifactIds
+	 */
+    @Parameter(defaultValue = "false")
+    private boolean setupXMLImportsWithActualArtifactIds;
+
     /**
      * Collection of Components Dependency needed at runtime. These elements will NOT be bundled with component
      * but registered as dependency
      */
     @Parameter
-    private List<CompDependency> compDependencies;
+    private List<CompDependency> unbundledDependencies;
 
     private Pattern pattern = null;
 
@@ -132,7 +140,7 @@ public class ComponentDeploymentMojo extends AbstractMojo {
                     String path = mainArtifact.getFile().getAbsolutePath();
                     if (filterJarFile(path)) {
                         try {
-                            util.addJarFile(path);
+                            util.addBundledDependency(new CompDependency(mainArtifact));
                             getLog().info("    file: " + path);
                         } catch (Exception e) {
                             throw new MojoExecutionException("Main artifact: " + mainArtifact + ": failed get jar file: " + mainArtifact.getFile().getAbsolutePath());
@@ -163,7 +171,7 @@ public class ComponentDeploymentMojo extends AbstractMojo {
                     String path = a.getFile().getAbsolutePath();
                     if (filterJarFile(path)) {
                         try {
-                            util.addJarFile(path);
+                            util.addBundledDependency(new CompDependency(a));
                             getLog().info("      Add file: " + path);
                         } catch (Exception e) {
                             throw new MojoExecutionException("Artifact: " + a + ": failed get jar file: " + path);
@@ -218,9 +226,8 @@ public class ComponentDeploymentMojo extends AbstractMojo {
         }
         getLog().info("Process component XML configuration...");
         try {
-            getLog().info("    setup imports "+ (keepImports ? "keeping" : "removing") +"  existing values ...");
-            util.setupXMLImports( keepImports, compDependencies  );
-            
+            getLog().info("    setup imports " + (keepImports ? "keeping" : "removing") + "  existing values ...");
+            util.setupXMLImports( keepImports, unbundledDependencies, setupXMLImportsWithActualArtifactIds);
             if (addReleaseLabel) {
                 getLog().info("    setup release and version info...");
                 util.setupXMLReleaseLabel();
