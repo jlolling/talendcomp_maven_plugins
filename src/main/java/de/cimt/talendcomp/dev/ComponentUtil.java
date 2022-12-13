@@ -359,10 +359,9 @@ public class ComponentUtil {
 					"There is no ADVANCED_PARAMETERS tag. This is not a valid Talend component descriptor document!");
 		} else {
 			// remove old node
-			@SuppressWarnings("unchecked")
-			List<Element> releaseNodes = xmlDoc.selectNodes("/COMPONENT/ADVANCED_PARAMETERS/PARAMETER");
-			for (Element e : releaseNodes) {
-				Attribute attr = e.attribute("NAME");
+			List<Node> releaseNodes = xmlDoc.selectNodes("/COMPONENT/ADVANCED_PARAMETERS/PARAMETER");
+			for (Node e : releaseNodes) {
+				Attribute attr = ((Element) e).attribute("NAME");
 				if (attr != null) {
 					String name = attr.getText();
 					if (name != null && name.startsWith("RELEASE_LABEL")) {
