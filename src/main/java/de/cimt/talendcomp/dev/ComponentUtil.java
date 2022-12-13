@@ -1,5 +1,5 @@
 /**
- * Copyright 2015 Jan Lolling jan.lolling@gmail.com
+ * Copyright 2022 Jan Lolling jan.lolling@gmail.com
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -51,7 +51,7 @@ public class ComponentUtil {
 	private String componentReleaseDate = null;
 	private boolean addReleaseInfoAsLabel = true;
 	private Document xmlDoc = null;
-	private List<File> listJars = new ArrayList<File>();
+	private List<JarFile> listJars = new ArrayList<JarFile>();
 	private SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
 	private File messagePropertiesFile = null;
 	private Properties messages = new Properties();
@@ -60,13 +60,35 @@ public class ComponentUtil {
 	private Pattern ignoreFilePattern = null;
 	private String talendLibrariesGroupId = "org.talend.libraries";
 	private String talendLibrariesVersion = "6.0.0-SNAPSHOT";
+	private boolean useTalendLibrariesMavenLocation = true;
 	
-	public void addJarFile(String jarFilePath) throws Exception {
+	public static class JarFile {
+		private File file;
+		private String artifactId;
+		private String groupId;
+		private String version;
+	}
+	
+	public void addJarFile(String jarFilePath, String groupId, String artifactId, String version) throws Exception {
 		File jar = new File(jarFilePath);
 		if (jar.exists() == false) {
 			throw new Exception("jar file: " + jarFilePath + " does not exist!");
 		}
-		listJars.add(jar);
+		if (groupId == null || groupId.trim().isEmpty()) {
+			throw new Exception("groupId cannot be null or empty");
+		}
+		if (artifactId == null || artifactId.trim().isEmpty()) {
+			throw new Exception("artifactId cannot be null or empty");
+		}
+		if (version == null || version.trim().isEmpty()) {
+			throw new Exception("groupId cannot be null or empty");
+		}
+		JarFile f = new JarFile();
+		f.file = jar;
+		f.groupId = groupId;
+		f.artifactId = artifactId;
+		f.version = version;
+		listJars.add(f);
 	}
 
 	public String getComponentName() {
@@ -186,12 +208,10 @@ public class ComponentUtil {
 		}
 		int count = 0;
 		File dir = new File(componentBaseDir, componentName);
-		for (File jarFile : listJars) {
-			if (jarFile.exists() == false) {
-				throw new Exception("");
-			}
-			File targetFile = new File(dir.getAbsolutePath(), jarFile.getName());
-			copyFile(jarFile, targetFile);
+		for (JarFile jarFile : listJars) {
+			File sourceFile = jarFile.file;
+			File targetFile = new File(dir.getAbsolutePath(), jarFile.file.getName());
+			copyFile(sourceFile, targetFile);
 			count++;
 		}
 		return count;
@@ -227,17 +247,27 @@ public class ComponentUtil {
 		return componentReleaseDate;
 	}
 	
-	private String buildMVNAttributeForShippedJars(File jar) {
+	private String buildMVNAttributeForShippedJarsInTalendLib(JarFile jar) {
 		StringBuilder sb = new StringBuilder();
 		sb.append("mvn:");
 		sb.append(talendLibrariesGroupId);
 		sb.append("/");
-		sb.append(getJarNameWithoutExt(jar.getName()));
+		sb.append(getJarNameWithoutExt(jar.file.getName()));
 		sb.append("/");
 		sb.append(talendLibrariesVersion);
 		return sb.toString();
 	}
 	
+	private String buildMVNAttributeForShippedJarsInNativeRepo(JarFile jar) {
+		StringBuilder sb = new StringBuilder();
+		sb.append("mvn:");
+		sb.append(jar.groupId);
+		sb.append("/");
+		sb.append(jar.artifactId);
+		sb.append("/");
+		sb.append(jar.version);
+		return sb.toString();
+	}
 	private String buildMVNAttributeForAdditionalDependency(CompDependency dependency) {
 		StringBuilder sb = new StringBuilder();
 		sb.append("mvn:");
@@ -277,12 +307,20 @@ public class ComponentUtil {
 		}
 
 		// add new jars as IMPORT tags
-		for (File jar : listJars) {
-			importsNode.addElement("IMPORT")
-					.addAttribute("NAME", getJarCommonName(jar.getName()))
-					.addAttribute("MODULE", jar.getName())
-					.addAttribute("MVN", buildMVNAttributeForShippedJars(jar))
-					.addAttribute("REQUIRED", "true");
+		for (JarFile jar : listJars) {
+			if (useTalendLibrariesMavenLocation) {
+				importsNode.addElement("IMPORT")
+				.addAttribute("NAME", getJarCommonName(jar.file.getName()))
+				.addAttribute("MODULE", jar.file.getName())
+				.addAttribute("MVN", buildMVNAttributeForShippedJarsInTalendLib(jar))
+				.addAttribute("REQUIRED", "true");
+			} else {
+				importsNode.addElement("IMPORT")
+				.addAttribute("NAME", getJarCommonName(jar.file.getName()))
+				.addAttribute("MODULE", jar.file.getName())
+				.addAttribute("MVN", buildMVNAttributeForShippedJarsInNativeRepo(jar))
+				.addAttribute("REQUIRED", "true");
+			}
 		}
 
 		if (dependencies == null || dependencies.isEmpty())
@@ -580,6 +618,14 @@ public class ComponentUtil {
 
 	public void setTalendLibrariesVersion(String versionTalendLibraries) {
 		this.talendLibrariesVersion = versionTalendLibraries;
+	}
+
+	public boolean isUseTalendLibrariesMavenLocation() {
+		return useTalendLibrariesMavenLocation;
+	}
+
+	public void setUseTalendLibrariesMavenLocation(boolean useArtificialTalendMavenRepo) {
+		this.useTalendLibrariesMavenLocation = useArtificialTalendMavenRepo;
 	}
 
 }

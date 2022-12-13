@@ -1,5 +1,5 @@
 /**
- * Copyright 2015 Jan Lolling jan.lolling@gmail.com
+ * Copyright 2022 Jan Lolling jan.lolling@gmail.com
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -75,8 +75,17 @@ public class ComponentDeploymentMojo extends AbstractMojo {
     @Parameter(defaultValue = "false")
     private boolean keepImports;
     
+    @Parameter(defaultValue = "true")
+    private boolean useTalendLibrariesMavenLocation;
+    
+    @Parameter(defaultValue = "org.talend.libraries")
+    private String talendLibrariesGroupId;
+
+    @Parameter(defaultValue = "6.0.0-SNAPSHOT")
+    private String talendLibrariesVersion;
+    
     /**
-     * Comma seperated list of scopes to be expluded. Default to compile, test, system, provided
+     * Comma separated list of scopes to be excluded. Default to compile, test, system, provided
      */
     @Parameter(defaultValue = "system, test, provided")
     private String excludeScopes;
@@ -113,6 +122,9 @@ public class ComponentDeploymentMojo extends AbstractMojo {
         }
         getLog().info("############ Setup component: " + componentName + " with base dir: " + componentBaseDir);
         ComponentUtil util = new ComponentUtil();
+        util.setUseTalendLibrariesMavenLocation(useTalendLibrariesMavenLocation);
+        util.setTalendLibrariesGroupId(talendLibrariesGroupId);
+        util.setTalendLibrariesVersion(talendLibrariesVersion);
         File baseDir = new File(componentBaseDir);
         if (baseDir.isAbsolute() == false) {
         	baseDir = new File(project.getBasedir(), componentBaseDir);
@@ -132,7 +144,7 @@ public class ComponentDeploymentMojo extends AbstractMojo {
                     String path = mainArtifact.getFile().getAbsolutePath();
                     if (filterJarFile(path)) {
                         try {
-                            util.addJarFile(path);
+                            util.addJarFile(path, mainArtifact.getGroupId(), mainArtifact.getArtifactId(), mainArtifact.getVersion());
                             getLog().info("    file: " + path);
                         } catch (Exception e) {
                             throw new MojoExecutionException("Main artifact: " + mainArtifact + ": failed get jar file: " + mainArtifact.getFile().getAbsolutePath());
@@ -163,7 +175,7 @@ public class ComponentDeploymentMojo extends AbstractMojo {
                     String path = a.getFile().getAbsolutePath();
                     if (filterJarFile(path)) {
                         try {
-                            util.addJarFile(path);
+                            util.addJarFile(path, a.getGroupId(), a.getArtifactId(), a.getVersion());
                             getLog().info("      Add file: " + path);
                         } catch (Exception e) {
                             throw new MojoExecutionException("Artifact: " + a + ": failed get jar file: " + path);
