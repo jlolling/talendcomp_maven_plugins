@@ -16,7 +16,7 @@ If you have more than one component in your project, use multiple executions, th
 	<plugin>
 		<groupId>de.cimt.talendcomp</groupId>
 		<artifactId>cimt-talendcomp-maven-plugin</artifactId>
-		<version>3.0</version>
+		<version>3.1</version>
 		<configuration>
 			<checkMessageProperties>true</checkMessageProperties>
 			<copyFromSourceBaseDir>src/talend_component/</copyFromSourceBaseDir>
