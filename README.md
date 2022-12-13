@@ -8,6 +8,7 @@ This plugin is bound to the phase `package` and performes for a talend component
 * Setup the component version according to the project version
 * Checks the message properties (only the default) if all necessary message keys exist.
 * Checks the messages if the LONG_NAME property is present - needed to show a meaningful tool-tip for the component in the palette.
+* Can now setup the module maven location in the native maven way instead of the terrible org.talend.libraries maven location. Please set the tag useTalendLibrariesMavenLocation to false. It works string with Talend version 8!
 
 To use it in your own Talend component project use this plugin configuration. You can set configuration parameters in context of an execution of in for all executions.
 If you have more than one component in your project, use multiple executions, this example assumes 2 components. It is helpful to use the component name as id
@@ -15,11 +16,12 @@ If you have more than one component in your project, use multiple executions, th
 	<plugin>
 		<groupId>de.cimt.talendcomp</groupId>
 		<artifactId>cimt-talendcomp-maven-plugin</artifactId>
-		<version>2.1</version>
+		<version>3.0</version>
 		<configuration>
 			<checkMessageProperties>true</checkMessageProperties>
 			<copyFromSourceBaseDir>src/talend_component/</copyFromSourceBaseDir>
 			<componentBaseDir>${project.basedir}/talend_component</componentBaseDir>
+			<useTalendLibrariesMavenLocation>false</useTalendLibrariesMavenLocation> <!-- this is the new attribute to prevent org.talend.libraries location-->
 			<studioUserComponentFolder>/Data/Talend/Studio/talend_user_components</studioUserComponentFolder>
 		</configuration>
 		<executions>
@@ -61,40 +63,41 @@ If some components needs dedicated jars and other don't you can use the `jarExcl
 
 This is a typical maven log output:
 ```
---- cimt-talendcomp-maven-plugin:2.1:component (tFileExcelWorkbookOpen) @ jlo-talendcomp-excel ---
-[INFO] ############ Setup component: tFileExcelWorkbookOpen with base dir: /Data/Talend/workspace_talend_comp/talendcomp_tFileExcel/talend_component
+[INFO] --- cimt-talendcomp-maven-plugin:3.0:component (tFileExcelWorkbookOpen) @ jlo-talendcomp-excel ---
+[INFO] ############ Setup component: tFileExcelWorkbookOpen with base dir: /Users/jan/development/eclipse-workspace-talendcomp/talendcomp_tFileExcel/talend_component
 [INFO] Check dependencies and collect artifact jar files...
-[INFO]     file: /Data/Talend/workspace_talend_comp/talendcomp_tFileExcel/target/jlo-talendcomp-excel-11.3.jar
+[INFO]     file: /Users/jan/development/eclipse-workspace-talendcomp/talendcomp_tFileExcel/target/jlo-talendcomp-excel-13.5.jar
 [INFO] Collect project artifacts without scope [system, test, provided]
-[INFO]       Add file: /Users/jan/.m2/repository/org/apache/poi/poi-ooxml/4.1.0/poi-ooxml-4.1.0.jar
-[INFO]       Add file: /Users/jan/.m2/repository/org/apache/poi/poi/4.1.0/poi-4.1.0.jar
-[INFO]       Add file: /Users/jan/.m2/repository/commons-codec/commons-codec/1.12/commons-codec-1.12.jar
-[INFO]       Add file: /Users/jan/.m2/repository/org/apache/commons/commons-collections4/4.3/commons-collections4-4.3.jar
+[INFO]       Add file: /Users/jan/.m2/repository/org/apache/poi/poi-ooxml/4.1.2/poi-ooxml-4.1.2.jar
+[INFO]       Add file: /Users/jan/.m2/repository/org/apache/poi/poi/4.1.2/poi-4.1.2.jar
+[INFO]       Add file: /Users/jan/.m2/repository/commons-codec/commons-codec/1.13/commons-codec-1.13.jar
+[INFO]       Add file: /Users/jan/.m2/repository/org/apache/commons/commons-collections4/4.4/commons-collections4-4.4.jar
 [INFO]       Add file: /Users/jan/.m2/repository/org/apache/commons/commons-math3/3.6.1/commons-math3-3.6.1.jar
-[INFO]       Add file: /Users/jan/.m2/repository/org/apache/poi/poi-ooxml-schemas/4.1.0/poi-ooxml-schemas-4.1.0.jar
+[INFO]       Add file: /Users/jan/.m2/repository/com/zaxxer/SparseBitSet/1.2/SparseBitSet-1.2.jar
+[INFO]       Add file: /Users/jan/.m2/repository/org/apache/poi/poi-ooxml-schemas/4.1.2/poi-ooxml-schemas-4.1.2.jar
 [INFO]       Add file: /Users/jan/.m2/repository/org/apache/xmlbeans/xmlbeans/3.1.0/xmlbeans-3.1.0.jar
-[INFO]       Add file: /Users/jan/.m2/repository/org/apache/commons/commons-compress/1.18/commons-compress-1.18.jar
+[INFO]       Add file: /Users/jan/.m2/repository/org/apache/commons/commons-compress/1.19/commons-compress-1.19.jar
 [INFO]       Add file: /Users/jan/.m2/repository/com/github/virtuald/curvesapi/1.06/curvesapi-1.06.jar
 [INFO]       Add file: /Users/jan/.m2/repository/xalan/xalan/2.7.2/xalan-2.7.2.jar
 [INFO]       Add file: /Users/jan/.m2/repository/xalan/serializer/2.7.2/serializer-2.7.2.jar
-[INFO] Clean target and copy resources from source base dir: /Data/Talend/workspace_talend_comp/talendcomp_tFileExcel/talend_component
+[INFO] Clean target and copy resources from source base dir: /Users/jan/development/eclipse-workspace-talendcomp/talendcomp_tFileExcel/talend_component
 [INFO]     Source and target component folder are the same. No cleanup proceeded and no files copied.
 [INFO] Read component XML configuration...
-[INFO]     XML configuration file: /Data/Talend/workspace_talend_comp/talendcomp_tFileExcel/talend_component/tFileExcelWorkbookOpen/tFileExcelWorkbookOpen_java.xml sucessfully read
+[INFO]     XML configuration file: /Users/jan/development/eclipse-workspace-talendcomp/talendcomp_tFileExcel/talend_component/tFileExcelWorkbookOpen/tFileExcelWorkbookOpen_java.xml sucessfully read
 [INFO] Remove previous jars from component...
-[INFO]     12 old jars deleted.
+[INFO]     13 old jars deleted.
 [INFO] Copy jars into component...
-[INFO]     12 jars copied.
+[INFO]     13 jars copied.
 [INFO] Process component XML configuration...
 [INFO]     setup imports removing  existing values ...
 [INFO]     setup release and version info...
 [INFO]     Done.
 [INFO] Write back component XML configuration...
-[INFO]     XML configuration file: /Data/Talend/workspace_talend_comp/talendcomp_tFileExcel/talend_component/tFileExcelWorkbookOpen/tFileExcelWorkbookOpen_java.xml successfully written.
+[INFO]     XML configuration file: /Users/jan/development/eclipse-workspace-talendcomp/talendcomp_tFileExcel/talend_component/tFileExcelWorkbookOpen/tFileExcelWorkbookOpen_java.xml successfully written.
 [INFO] Check message properties...
-[INFO]     Read message properties file: /Data/Talend/workspace_talend_comp/talendcomp_tFileExcel/talend_component/tFileExcelWorkbookOpen/tFileExcelWorkbookOpen_messages.properties
-[INFO] Copy component files to studio custom component dir: /Data/Talend/Studio/talend_user_components
-[INFO]     19 files copied.
+[INFO]     Read message properties file: /Users/jan/development/eclipse-workspace-talendcomp/talendcomp_tFileExcel/talend_component/tFileExcelWorkbookOpen/tFileExcelWorkbookOpen_messages.properties
+[INFO] Copy component files to studio custom component dir: /Users/jan/development/talend_user_components/
+[INFO]     20 files copied.
 [INFO] Finished.
 ```
 
@@ -103,20 +106,21 @@ Example:
 ```xml
   <CODEGENERATION> 
     <IMPORTS> 
-      <IMPORT NAME="jlo-talendcomp-excel" MODULE="jlo-talendcomp-excel-11.3.jar" MVN="mvn:org.talend.libraries/jlo-talendcomp-excel-11.3/6.0.0-SNAPSHOT" REQUIRED="true"/>
-      <IMPORT NAME="poi-ooxml" MODULE="poi-ooxml-4.1.0.jar" MVN="mvn:org.talend.libraries/poi-ooxml-4.1.0/6.0.0-SNAPSHOT" REQUIRED="true"/>
-      <IMPORT NAME="poi" MODULE="poi-4.1.0.jar" MVN="mvn:org.talend.libraries/poi-4.1.0/6.0.0-SNAPSHOT" REQUIRED="true"/>
-      <IMPORT NAME="commons-codec" MODULE="commons-codec-1.12.jar" MVN="mvn:org.talend.libraries/commons-codec-1.12/6.0.0-SNAPSHOT" REQUIRED="true"/>
-      <IMPORT NAME="commons-collections4" MODULE="commons-collections4-4.3.jar" MVN="mvn:org.talend.libraries/commons-collections4-4.3/6.0.0-SNAPSHOT" REQUIRED="true"/>
-      <IMPORT NAME="commons-math3" MODULE="commons-math3-3.6.1.jar" MVN="mvn:org.talend.libraries/commons-math3-3.6.1/6.0.0-SNAPSHOT" REQUIRED="true"/>
-      <IMPORT NAME="poi-ooxml-schemas" MODULE="poi-ooxml-schemas-4.1.0.jar" MVN="mvn:org.talend.libraries/poi-ooxml-schemas-4.1.0/6.0.0-SNAPSHOT" REQUIRED="true"/>
-      <IMPORT NAME="xmlbeans" MODULE="xmlbeans-3.1.0.jar" MVN="mvn:org.talend.libraries/xmlbeans-3.1.0/6.0.0-SNAPSHOT" REQUIRED="true"/>
-      <IMPORT NAME="commons-compress" MODULE="commons-compress-1.18.jar" MVN="mvn:org.talend.libraries/commons-compress-1.18/6.0.0-SNAPSHOT" REQUIRED="true"/>
-      <IMPORT NAME="curvesapi" MODULE="curvesapi-1.06.jar" MVN="mvn:org.talend.libraries/curvesapi-1.06/6.0.0-SNAPSHOT" REQUIRED="true"/>
-      <IMPORT NAME="xalan" MODULE="xalan-2.7.2.jar" MVN="mvn:org.talend.libraries/xalan-2.7.2/6.0.0-SNAPSHOT" REQUIRED="true"/>
-      <IMPORT NAME="serializer" MODULE="serializer-2.7.2.jar" MVN="mvn:org.talend.libraries/serializer-2.7.2/6.0.0-SNAPSHOT" REQUIRED="true"/>
+      <IMPORT NAME="jlo-talendcomp-excel" MODULE="jlo-talendcomp-excel-13.5.jar" MVN="mvn:de.jlo.talendcomp/jlo-talendcomp-excel/13.5" REQUIRED="true"/>
+      <IMPORT NAME="poi-ooxml" MODULE="poi-ooxml-4.1.2.jar" MVN="mvn:org.apache.poi/poi-ooxml/4.1.2" REQUIRED="true"/>
+      <IMPORT NAME="poi" MODULE="poi-4.1.2.jar" MVN="mvn:org.apache.poi/poi/4.1.2" REQUIRED="true"/>
+      <IMPORT NAME="commons-codec" MODULE="commons-codec-1.13.jar" MVN="mvn:commons-codec/commons-codec/1.13" REQUIRED="true"/>
+      <IMPORT NAME="commons-collections4" MODULE="commons-collections4-4.4.jar" MVN="mvn:org.apache.commons/commons-collections4/4.4" REQUIRED="true"/>
+      <IMPORT NAME="commons-math3" MODULE="commons-math3-3.6.1.jar" MVN="mvn:org.apache.commons/commons-math3/3.6.1" REQUIRED="true"/>
+      <IMPORT NAME="SparseBitSet" MODULE="SparseBitSet-1.2.jar" MVN="mvn:com.zaxxer/SparseBitSet/1.2" REQUIRED="true"/>
+      <IMPORT NAME="poi-ooxml-schemas" MODULE="poi-ooxml-schemas-4.1.2.jar" MVN="mvn:org.apache.poi/poi-ooxml-schemas/4.1.2" REQUIRED="true"/>
+      <IMPORT NAME="xmlbeans" MODULE="xmlbeans-3.1.0.jar" MVN="mvn:org.apache.xmlbeans/xmlbeans/3.1.0" REQUIRED="true"/>
+      <IMPORT NAME="commons-compress" MODULE="commons-compress-1.19.jar" MVN="mvn:org.apache.commons/commons-compress/1.19" REQUIRED="true"/>
+      <IMPORT NAME="curvesapi" MODULE="curvesapi-1.06.jar" MVN="mvn:com.github.virtuald/curvesapi/1.06" REQUIRED="true"/>
+      <IMPORT NAME="xalan" MODULE="xalan-2.7.2.jar" MVN="mvn:xalan/xalan/2.7.2" REQUIRED="true"/>
+      <IMPORT NAME="serializer" MODULE="serializer-2.7.2.jar" MVN="mvn:xalan/serializer/2.7.2" REQUIRED="true"/>
     </IMPORTS> 
   </CODEGENERATION>  
 ```
 
-This plugin is available via Maven Central since 2018-07-20.
+This plugin is available via Maven Central since 2018-07-20 and update at 2022-12-13
