@@ -12,8 +12,8 @@ public class TestComponentUtil {
 	@Test
 	public void testReadAndWrite() throws Exception {
 		ComponentUtil util = new ComponentUtil();
-		util.addJarFile("/Users/jan/development/eclipse-workspace-talendcomp/talendcomp_maven_plugins/test_libs/jlo-talendcomp-json-13.2.jar", "de.jlo.talendcomp", "jlo-talendcomp-json", "13.2");
-		util.setComponentBaseDir("/Users/jan/development/eclipse-workspace-talendcomp/talendcomp_maven_plugins/src/test/components/");
+		util.addJarFile("src/test/resources/jlo-talendcomp-json-13.2.jar", "de.jlo.talendcomp", "jlo-talendcomp-json", "13.2");
+		util.setComponentBaseDir("src/test/components/");
 		util.setComponentName("tTest");
 		util.setComponentVersion("1.0");
 		util.setUseTalendLibrariesMavenLocation(false);
