@@ -63,7 +63,7 @@ If some components needs dedicated jars and other don't you can use the `jarExcl
 
 This is a typical maven log output:
 ```
-[INFO] --- cimt-talendcomp-maven-plugin:3.0:component (tFileExcelWorkbookOpen) @ jlo-talendcomp-excel ---
+[INFO] --- cimt-talendcomp-maven-plugin:3.1:component (tFileExcelWorkbookOpen) @ jlo-talendcomp-excel ---
 [INFO] ############ Setup component: tFileExcelWorkbookOpen with base dir: /Users/jan/development/eclipse-workspace-talendcomp/talendcomp_tFileExcel/talend_component
 [INFO] Check dependencies and collect artifact jar files...
 [INFO]     file: /Users/jan/development/eclipse-workspace-talendcomp/talendcomp_tFileExcel/target/jlo-talendcomp-excel-13.5.jar
