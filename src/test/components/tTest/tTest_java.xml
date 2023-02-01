@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <COMPONENT> 
-  <HEADER AUTHOR="cimt AG" COMPATIBILITY="ALL" DATA_AUTO_PROPAGATE="false" PLATEFORM="ALL" RELEASE_DATE="20221213" SERIAL="" STARTABLE="true" STATUS="PROD" VERSION="1.0"> 
+  <HEADER AUTHOR="cimt AG" COMPATIBILITY="ALL" DATA_AUTO_PROPAGATE="false" PLATEFORM="ALL" RELEASE_DATE="20230201" SERIAL="" STARTABLE="true" STATUS="PROD" VERSION="1.0"> 
     <SIGNATURE/> 
   </HEADER>  
   <FAMILIES> 
@@ -59,13 +59,13 @@
         <ITEM NAME="FUNC_CLASS" FIELD="TEXT"/> 
       </ITEMS> 
     </PARAMETER>  
-    <PARAMETER NAME="RELEASE_LABEL_20221213" FIELD="LABEL" COLOR="0;0;0" NUM_ROW="900">
-      <DEFAULT>Release: 1.0 build at: 20221213</DEFAULT>
+    <PARAMETER NAME="RELEASE_LABEL_20230201" FIELD="LABEL" COLOR="0;0;0" NUM_ROW="900">
+      <DEFAULT>Release: 1.0 build at: 20230201</DEFAULT>
     </PARAMETER>
   </ADVANCED_PARAMETERS>  
   <CODEGENERATION> 
     <IMPORTS> 
-      <IMPORT NAME="jlo-talendcomp-json" MODULE="jlo-talendcomp-json-13.2.jar" MVN="mvn:de.jlo.talendcomp/jlo-talendcomp-json/13.2" REQUIRED="true"/>
+      <IMPORT NAME="jlo-talendcomp-json" REQUIRED="true" MODULE="jlo-talendcomp-json-13.2.jar" MVN="mvn:de.jlo.talendcomp/jlo-talendcomp-json/13.2"/>
     </IMPORTS> 
   </CODEGENERATION>  
   <RETURNS> 

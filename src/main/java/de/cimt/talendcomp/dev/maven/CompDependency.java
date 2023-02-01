@@ -16,6 +16,7 @@
 package de.cimt.talendcomp.dev.maven;
 
 import java.io.File;
+import java.util.Objects;
 
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.ArtifactUtils;
@@ -244,11 +245,11 @@ public class CompDependency   {
     {
         if ( this.classifier == null )
         {
-            return groupId + ":" + artifactId + ":" + StringUtils.defaultString( version, "?" ) + ":" + type;
+            return groupId + ":" + artifactId + ":" + Objects.toString( version, "?" ) + ":" + type;
         }
         else
         {
-            return groupId + ":" + artifactId + ":" + classifier + ":" + StringUtils.defaultString( version, "?" ) + ":"
+            return groupId + ":" + artifactId + ":" + classifier + ":" + Objects.toString( version, "?" ) + ":"
                 + type;
         }
     }
@@ -274,7 +275,7 @@ public class CompDependency   {
      */
     public String getDestFileName()
     {
-        return destFileName!=null ? destFileName : this.artifactId + "_" + this.version + ".jar";
+        return destFileName!=null ? destFileName : this.artifactId + "-" + this.version + ".jar";
     }
 
     /**

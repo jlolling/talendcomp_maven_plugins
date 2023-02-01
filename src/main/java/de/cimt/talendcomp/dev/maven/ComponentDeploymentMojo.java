@@ -81,15 +81,15 @@ public class ComponentDeploymentMojo extends AbstractMojo {
     @Parameter(defaultValue = "org.talend.libraries")
     private String talendLibrariesGroupId;
 
-    @Parameter(defaultValue = "6.0.0-SNAPSHOT")
+    @Parameter(defaultValue = "6.0.0")
     private String talendLibrariesVersion;
     
     /**
      * Comma separated list of scopes to be excluded. Default to compile, test, system, provided
      */
-    @Parameter(defaultValue = "system, test, provided")
+    @Parameter(defaultValue = "system,test,provided")
     private String excludeScopes;
-    
+
     /**
      * Collection of Components Dependency needed at runtime. These elements will NOT be bundled with component
      * but registered as dependency
@@ -122,6 +122,7 @@ public class ComponentDeploymentMojo extends AbstractMojo {
         }
         getLog().info("############ Setup component: " + componentName + " with base dir: " + componentBaseDir);
         ComponentUtil util = new ComponentUtil();
+        util.setLog(getLog());
         util.setUseTalendLibrariesMavenLocation(useTalendLibrariesMavenLocation);
         util.setTalendLibrariesGroupId(talendLibrariesGroupId);
         util.setTalendLibrariesVersion(talendLibrariesVersion);
@@ -175,8 +176,8 @@ public class ComponentDeploymentMojo extends AbstractMojo {
                     String path = a.getFile().getAbsolutePath();
                     if (filterJarFile(path)) {
                         try {
-                            util.addJarFile(path, a.getGroupId(), a.getArtifactId(), a.getVersion());
                             getLog().info("      Add file: " + path);
+                            util.addJarFile(path, a.getGroupId(), a.getArtifactId(), a.getVersion());
                         } catch (Exception e) {
                             throw new MojoExecutionException("Artifact: " + a + ": failed get jar file: " + path);
                         }
@@ -218,23 +219,13 @@ public class ComponentDeploymentMojo extends AbstractMojo {
             MojoFailureException me = new MojoFailureException("Remove previous jars from component failed: " + e.getMessage(), e);
             throw me;
         }
-        if (noJars == false) {
-            try {
-                getLog().info("Copy jars into component...");
-                int count = util.copyJars();
-                getLog().info("    " + count + " jars copied.");
-            } catch (Exception e) {
-                MojoFailureException me = new MojoFailureException("Copy jars into component failed: " + e.getMessage(), e);
-                throw me;
-            }
-        }
         getLog().info("Process component XML configuration...");
         try {
-            getLog().info("    setup imports "+ (keepImports ? "keeping" : "removing") +"  existing values ...");
+            getLog().info("    Setup imports "+ (keepImports ? "keeping" : "removing") +"  existing values ...");
             util.setupXMLImports( keepImports, compDependencies  );
             
             if (addReleaseLabel) {
-                getLog().info("    setup release and version info...");
+                getLog().info("    Setup release and version info...");
                 util.setupXMLReleaseLabel();
             }
             getLog().info("    Done.");
@@ -249,6 +240,16 @@ public class ComponentDeploymentMojo extends AbstractMojo {
         } catch (Exception e) {
             MojoFailureException me = new MojoFailureException("Write back component XML configuration failed: " + e.getMessage(), e);
             throw me;
+        }
+        if (noJars == false) {
+            try {
+                getLog().info("Copy jars into component...");
+                int count = util.copyJars();
+                getLog().info("    " + count + " jars copied.");
+            } catch (Exception e) {
+                MojoFailureException me = new MojoFailureException("Copy jars into component failed: " + e.getMessage(), e);
+                throw me;
+            }
         }
         if (checkMessageProperties) {
             getLog().info("Check message properties...");
