@@ -1,4 +1,4 @@
-package de.cimt.talendcomp.util.test;
+package de.cimt.talendcomp.dev.test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;

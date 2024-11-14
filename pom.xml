@@ -23,7 +23,7 @@
             <name>Jan Lolling</name>
             <email>jan.lolling@gmail.de</email>
             <organization>Private</organization>
-            <organizationUrl>https://www.jan-lolling.de</organizationUrl>
+            <organizationUrl>https://github.com/jlolling</organizationUrl>
         </developer>
         <developer>
             <name>Daniel Koch</name>
@@ -48,12 +48,13 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.10.1</version>
+                <version>3.13.0</version>
                 <configuration>
-                    <source>1.8</source>
-                    <target>1.8</target>
+                    <source>8</source>
+                    <target>8</target>
                 </configuration>
             </plugin>
+
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
@@ -64,6 +65,7 @@
                     </execution>
                 </executions>
             </plugin>
+
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-plugin-plugin</artifactId>
@@ -107,6 +109,7 @@
                     </execution>
                 </executions>
             </plugin>
+
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-gpg-plugin</artifactId>
@@ -121,6 +124,7 @@
                     </execution>
                 </executions>
             </plugin>
+
         </plugins>
     </build>
 

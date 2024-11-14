@@ -34,6 +34,7 @@ import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.apache.maven.project.MavenProject;
 
 import de.cimt.talendcomp.dev.ComponentUtil;
+import de.cimt.talendcomp.dev.JETFileChecker;
 
 @Mojo(name = "component", requiresDependencyResolution = ResolutionScope.COMPILE, defaultPhase = LifecyclePhase.PACKAGE)
 @Execute(goal = "component", phase = LifecyclePhase.PACKAGE)
@@ -77,6 +78,9 @@ public class ComponentDeploymentMojo extends AbstractMojo {
     
     @Parameter(defaultValue = "true")
     private boolean useTalendLibrariesMavenLocation;
+
+    @Parameter(defaultValue = "true")
+    private boolean checkJetFiles;
     
     @Parameter(defaultValue = "org.talend.libraries")
     private String talendLibrariesGroupId;
@@ -270,6 +274,31 @@ public class ComponentDeploymentMojo extends AbstractMojo {
                     throw (MojoFailureException) e;
                 } else {
                     MojoFailureException me = new MojoFailureException("Check message message properties failed: " + e.getMessage(), e);
+                    throw me;
+                }
+            }
+        }
+        if (checkJetFiles) {
+            File sourceDir = new File(copyFromSourceBaseDir, componentName);
+            if (sourceDir.isAbsolute() == false) {
+                sourceDir = new File(project.getBasedir().getAbsolutePath(), copyFromSourceBaseDir);
+            }
+            getLog().info("Check JET files from component dir: " + sourceDir.getAbsolutePath());
+        	JETFileChecker checker = new JETFileChecker(sourceDir.getAbsolutePath());
+        	try {
+        		File[] jetFiles = checker.listJetFiles();
+        		for (File jetFile : jetFiles) {
+        			getLog().info("    check file: " + jetFile);
+        			String checkResult = checker.checkJetFile(jetFile);
+        			if (checkResult != null) {
+        				throw new MojoFailureException("Check JET file: " + jetFile.getAbsolutePath() + " failed: " + checkResult);
+        			}
+        		}
+            } catch (Exception e) {
+                if (e instanceof MojoFailureException) {
+                    throw (MojoFailureException) e;
+                } else {
+                    MojoFailureException me = new MojoFailureException("Check JET files failed: " + e.getMessage(), e);
                     throw me;
                 }
             }
