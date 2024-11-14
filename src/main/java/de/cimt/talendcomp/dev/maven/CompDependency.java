@@ -27,7 +27,8 @@ import org.codehaus.plexus.util.StringUtils;
  * @author dkoch
  */
 public class CompDependency   {
-  /**
+    
+	/**
      * Group Id of Artifact
      *
      * @parameter
@@ -90,21 +91,21 @@ public class CompDependency   {
     private String excludes;
 
     /**
-     * Text containing a condition used without modification for attibute required_if.
+     * Text containing a condition used without modification for attribute requiredIf.
      * 
      * @parameter
      */
     private String requiredIf;
 
     /**
-     * Marks dependency to be reqired, otherwise missing dedendency will not cause any error.
+     * Marks dependency to be required, otherwise missing dependency will not cause any error.
      * 
      * @parameter
      */
     private boolean required=false;
 
     /**
-     * Default ctor.
+     * Default constructor.
      */
     public CompDependency()
     {

@@ -1,5 +1,5 @@
 /**
- * Copyright 2022 Jan Lolling jan.lolling@gmail.com
+ * Copyright 2024 Jan Lolling jan.lolling@gmail.com
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -36,6 +36,10 @@ import org.apache.maven.project.MavenProject;
 import de.cimt.talendcomp.dev.ComponentUtil;
 import de.cimt.talendcomp.dev.JETFileChecker;
 
+/**
+ * Mojo steering the whole build process for a JET based component
+ * @author dkoch, jlolling
+ */
 @Mojo(name = "component", requiresDependencyResolution = ResolutionScope.COMPILE, defaultPhase = LifecyclePhase.PACKAGE)
 @Execute(goal = "component", phase = LifecyclePhase.PACKAGE)
 public class ComponentDeploymentMojo extends AbstractMojo {
