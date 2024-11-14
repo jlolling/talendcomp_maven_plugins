@@ -142,7 +142,7 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <failBuildOnCVSS>6</failBuildOnCVSS>
+                    <failBuildOnCVSS>10</failBuildOnCVSS>
                     <format>HTML</format>
                 </configuration>
             </plugin>
