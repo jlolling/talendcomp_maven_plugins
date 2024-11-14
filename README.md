@@ -12,6 +12,9 @@ This plugin is bound to the phase `package` and performes for a talend component
 
 To use it in your own Talend component project use this plugin configuration. You can set configuration parameters in context of an execution of in for all executions.
 If you have more than one component in your project, use multiple executions, this example assumes 2 components. It is helpful to use the component name as id
+
+If you leaf out the tag **copyFromSourceBaseDir** the plugin will use the path ```src/main/components``` for the component JET code sources and if you leaf out the tag **componentBaseDir** the plugin will use the path ```target/components``` for the final component files.
+
 ```xml
 	<plugin>
 		<groupId>de.cimt.talendcomp</groupId>
