@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>de.cimt.talendcomp</groupId>
 	<artifactId>cimt-talendcomp-maven-plugin</artifactId>
-	<version>3.3</version>
+	<version>4.0</version>
 	<packaging>maven-plugin</packaging>
 	<name>cimt-talendcomp-maven-plugin [${project.version}]</name>
 
