@@ -19,11 +19,10 @@ If you leaf out the tag **copyFromSourceBaseDir** the plugin will use the path `
 	<plugin>
 		<groupId>de.cimt.talendcomp</groupId>
 		<artifactId>cimt-talendcomp-maven-plugin</artifactId>
-		<version>3.1</version>
+		<version>4.0</version>
 		<configuration>
 			<checkMessageProperties>true</checkMessageProperties>
 			<copyFromSourceBaseDir>src/talend_component/</copyFromSourceBaseDir>
-			<componentBaseDir>${project.basedir}/talend_component</componentBaseDir>
 			<useTalendLibrariesMavenLocation>false</useTalendLibrariesMavenLocation> <!-- this is the new attribute to prevent org.talend.libraries location-->
 			<studioUserComponentFolder>/Data/Talend/Studio/talend_user_components</studioUserComponentFolder>
 		</configuration>
@@ -66,7 +65,7 @@ If some components needs dedicated jars and other don't you can use the `jarExcl
 
 This is a typical maven log output:
 ```
-[INFO] --- cimt-talendcomp-maven-plugin:3.1:component (tFileExcelWorkbookOpen) @ jlo-talendcomp-excel ---
+[INFO] --- cimt-talendcomp-maven-plugin:4.0:component (tFileExcelWorkbookOpen) @ jlo-talendcomp-excel ---
 [INFO] ############ Setup component: tFileExcelWorkbookOpen with base dir: /Users/jan/development/eclipse-workspace-talendcomp/talendcomp_tFileExcel/talend_component
 [INFO] Check dependencies and collect artifact jar files...
 [INFO]     file: /Users/jan/development/eclipse-workspace-talendcomp/talendcomp_tFileExcel/target/jlo-talendcomp-excel-13.5.jar
@@ -99,6 +98,8 @@ This is a typical maven log output:
 [INFO]     XML configuration file: /Users/jan/development/eclipse-workspace-talendcomp/talendcomp_tFileExcel/talend_component/tFileExcelWorkbookOpen/tFileExcelWorkbookOpen_java.xml successfully written.
 [INFO] Check message properties...
 [INFO]     Read message properties file: /Users/jan/development/eclipse-workspace-talendcomp/talendcomp_tFileExcel/talend_component/tFileExcelWorkbookOpen/tFileExcelWorkbookOpen_messages.properties
+[INFO] Check JET files from component dir: /Users/jan/development/eclipse-workspace-talendcomp/talendcomp_tFileExcel/src/main/components/tFileExcelWorkbookOpen
+[INFO]     check file: /Users/jan/development/eclipse-workspace-talendcomp/talendcomp_tFileExcel/src/main/components/tFileExcelWorkbookOpen/tFileExcelWorkbookOpen_begin.javajet
 [INFO] Copy component files to studio custom component dir: /Users/jan/development/talend_user_components/
 [INFO]     20 files copied.
 [INFO] Finished.
