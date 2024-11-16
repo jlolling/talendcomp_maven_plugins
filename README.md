@@ -8,6 +8,7 @@ This plugin is bound to the phase `package` and performes for a talend component
 * Setup the component version according to the project version
 * Checks the message properties (only the default) if all necessary message keys exist.
 * Checks the messages if the LONG_NAME property is present - needed to show a meaningful tool-tip for the component in the palette.
+* Checks the JET files for inconsistency of JET code marks (<% , %>)
 * Can now setup the module maven location in the native maven way instead of the terrible org.talend.libraries maven location. Please set the tag useTalendLibrariesMavenLocation to false. It works since Talend version 8!
 
 To use it in your own Talend component project use this plugin configuration. You can set configuration parameters in context of an execution of in for all executions.
