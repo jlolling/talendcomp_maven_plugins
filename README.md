@@ -8,13 +8,13 @@ This plugin is bound to the phase `package` and performes for a talend component
 * Setup the component version according to the project version
 * Checks the message properties (only the default) if all necessary message keys exist.
 * Checks the messages if the LONG_NAME property is present - needed to show a meaningful tool-tip for the component in the palette.
-* Checks the JET files for inconsistency of JET code marks (<% , %>)
+* Checks the JET files for inconsistency of JET code marks (<% , %>) - per default this check is enabled
 * Can now setup the module maven location in the native maven way instead of the terrible org.talend.libraries maven location. Please set the tag useTalendLibrariesMavenLocation to false. It works since Talend version 8!
 
 To use it in your own Talend component project use this plugin configuration. You can set configuration parameters in context of an execution of in for all executions.
 If you have more than one component in your project, use multiple executions, this example assumes 2 components. It is helpful to use the component name as id
 
-If you leaf out the tag **copyFromSourceBaseDir** the plugin will use the path ```src/main/components``` for the component JET code sources and if you leaf out the tag **componentBaseDir** the plugin will use the path ```target/components``` for the final component files.
+If you leaf out the tag **copyFromSourceBaseDir** the plugin will use the path ```src/main/components``` for the component JET code sources and if you leaf out the tag **componentBaseDir** the plugin will use the path ```target/components``` for the final component files. I highly recommend do not use them anymore!
 
 ```xml
 	<plugin>
@@ -23,8 +23,8 @@ If you leaf out the tag **copyFromSourceBaseDir** the plugin will use the path `
 		<version>4.0</version>
 		<configuration>
 			<checkMessageProperties>true</checkMessageProperties>
-			<copyFromSourceBaseDir>src/talend_component/</copyFromSourceBaseDir>
-			<useTalendLibrariesMavenLocation>false</useTalendLibrariesMavenLocation> <!-- this is the new attribute to prevent org.talend.libraries location-->
+			<copyFromSourceBaseDir>src/talend_component/</copyFromSourceBaseDir> <!-- better do not use tag instead put the actual component source in src/main/components/<component-name>/ -->
+			<useTalendLibrariesMavenLocation>false</useTalendLibrariesMavenLocation> <!-- attribute to prevent org.talend.libraries location -->
 			<studioUserComponentFolder>/Data/Talend/Studio/talend_user_components</studioUserComponentFolder>
 		</configuration>
 		<executions>
@@ -128,4 +128,4 @@ Example:
   </CODEGENERATION>  
 ```
 
-This plugin is available via Maven Central since 2018-07-20 and update at 2022-12-13
+This plugin is available via [Maven Central](https://central.sonatype.com/artifact/de.cimt.talendcomp/cimt-talendcomp-maven-plugin) since 2018-07-20 and update at 2024-10-14
