@@ -23,7 +23,7 @@ If you leaf out the tag **copyFromSourceBaseDir** the plugin will use the path `
 	<version>4.0</version>
 	<configuration>
 		<checkMessageProperties>true</checkMessageProperties>
-		<copyFromSourceBaseDir>src/talend_component/</copyFromSourceBaseDir> <!-- better do not use tag instead put the actual component source in src/main/components/<component-name>/ -->
+		<copyFromSourceBaseDir>src/talend_component/</copyFromSourceBaseDir> <!-- better do not use tag instead put the actual components sources in src/main/components/ -->
 		<useTalendLibrariesMavenLocation>false</useTalendLibrariesMavenLocation> <!-- attribute to prevent org.talend.libraries location -->
 		<studioUserComponentFolder>/Data/Talend/Studio/talend_user_components</studioUserComponentFolder>
 	</configuration>
