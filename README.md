@@ -17,42 +17,41 @@ If you have more than one component in your project, use multiple executions, th
 If you leaf out the tag **copyFromSourceBaseDir** the plugin will use the path ```src/main/components``` for the component JET code sources and if you leaf out the tag **componentBaseDir** the plugin will use the path ```target/components``` for the final component files. I highly recommend do not use them anymore!
 
 ```xml
-	<plugin>
-		<groupId>de.cimt.talendcomp</groupId>
-		<artifactId>cimt-talendcomp-maven-plugin</artifactId>
-		<version>4.0</version>
-		<configuration>
-			<checkMessageProperties>true</checkMessageProperties>
-			<copyFromSourceBaseDir>src/talend_component/</copyFromSourceBaseDir> <!-- better do not use tag instead put the actual component source in src/main/components/<component-name>/ -->
-			<useTalendLibrariesMavenLocation>false</useTalendLibrariesMavenLocation> <!-- attribute to prevent org.talend.libraries location -->
-			<studioUserComponentFolder>/Data/Talend/Studio/talend_user_components</studioUserComponentFolder>
-		</configuration>
-		<executions>
-			<execution>
-				<id>tComponent1</id>
-				<goals>
-					<goal>component</goal>
-				</goals>
-				<configuration>
-					<componentName>tComponent1</componentName>
-					<componentReleaseDate>20170106</componentReleaseDate>
-					<noJars>false</noJars>
-					<jarExcludePattern>log4j</jarExcludePattern>
-				</configuration>
-			</execution>
-			<execution>
-				<id>tComponent2</id>
-				<goals>
-					<goal>component</goal>
-				</goals>
-				<configuration>
-					<componentName>tComponent2</componentName>
-					<noJars>true</noJars>
-				</configuration>
-			</execution>
-		</executions>
-	</plugin>
-
+<plugin>
+	<groupId>de.cimt.talendcomp</groupId>
+	<artifactId>cimt-talendcomp-maven-plugin</artifactId>
+	<version>4.0</version>
+	<configuration>
+		<checkMessageProperties>true</checkMessageProperties>
+		<copyFromSourceBaseDir>src/talend_component/</copyFromSourceBaseDir> <!-- better do not use tag instead put the actual component source in src/main/components/<component-name>/ -->
+		<useTalendLibrariesMavenLocation>false</useTalendLibrariesMavenLocation> <!-- attribute to prevent org.talend.libraries location -->
+		<studioUserComponentFolder>/Data/Talend/Studio/talend_user_components</studioUserComponentFolder>
+	</configuration>
+	<executions>
+		<execution>
+			<id>tComponent1</id>
+			<goals>
+				<goal>component</goal>
+			</goals>
+			<configuration>
+				<componentName>tComponent1</componentName>
+				<componentReleaseDate>20170106</componentReleaseDate>
+				<noJars>false</noJars>
+				<jarExcludePattern>log4j</jarExcludePattern>
+			</configuration>
+		</execution>
+		<execution>
+			<id>tComponent2</id>
+			<goals>
+				<goal>component</goal>
+			</goals>
+			<configuration>
+				<componentName>tComponent2</componentName>
+				<noJars>true</noJars>
+			</configuration>
+		</execution>
+	</executions>
+</plugin>
 ```
 Only the configuration parameter `componentName` is mandatory.
 
